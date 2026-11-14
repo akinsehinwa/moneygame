@@ -99,14 +99,13 @@ def cmd_place(a):
     if not (a.stop < a.limit < a.target):
         sys.exit("Rejected: need stop < limit < target.")
     eq = equity(s)
-    if not getattr(a, "at", None):
-        last = fetch_bars(sym, time.time() - 5 * 86400)
-        if last:
-            mkt = last[-1]["c"]
-            if mkt <= a.stop:
-                sys.exit(f"Rejected: market {mkt} already at/below stop {a.stop}.")
-            if a.limit > mkt * 1.02:
-                sys.exit(f"Rejected: limit {a.limit} is >2% above market {mkt}; reprice.")
+    last = fetch_bars(sym, time.time() - 5 * 86400)
+    if last:
+        mkt = last[-1]["c"]
+        if mkt <= a.stop:
+            sys.exit(f"Rejected: market {mkt} already at/below stop {a.stop}.")
+        if a.limit > mkt * 1.02:
+            sys.exit(f"Rejected: limit {a.limit} is >2% above market {mkt}; reprice.")
     if a.qty:
         qty = a.qty
     else:
@@ -121,7 +120,7 @@ def cmd_place(a):
     avail = s["cash"] - reserved_cash(s)
     if notional > avail + 1e-9:
         sys.exit(f"Rejected: ${notional:.2f} > available cash ${avail:.2f}.")
-    now = int(a.at) if getattr(a, "at", None) else int(time.time())
+    now = int(time.time())
     oid = s["next_id"]; s["next_id"] += 1
     o = {"id": oid, "symbol": sym, "side": "buy", "qty": qty, "limit": a.limit, "stop": a.stop,
          "target": a.target, "tif": a.tif, "placed_at": now,
@@ -248,7 +247,6 @@ def main():
     p.add_argument("--limit", type=float, required=True); p.add_argument("--stop", type=float, required=True)
     p.add_argument("--target", type=float, required=True); p.add_argument("--tif", default="day", choices=["day", "gtc"])
     p.add_argument("--reason", required=True)
-    p.add_argument("--at", type=float, help=argparse.SUPPRESS)  # test-only backdating
     c = sp.add_parser("cancel"); c.add_argument("id", type=int)
     m = sp.add_parser("modify"); m.add_argument("id", type=int)
     m.add_argument("--stop", type=float); m.add_argument("--target", type=float); m.add_argument("--reason", required=True)
