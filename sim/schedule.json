@@ -1,0 +1,10 @@
+{
+  "timezone": "America/New_York",
+  "window": "2026-11-16 to 2026-11-20 (weekdays)",
+  "tasks": [
+    {"id": "trig_011rQaSsrNKGFCb4i9VCMyjf", "name": "pre-market plan", "time": "08:47"},
+    {"id": "trig_016pWqK7vobPDC1mmKrrYUds", "name": "midday check", "time": "12:37"},
+    {"id": "trig_01QCcpYKie2bxh9RwfzGjQKK", "name": "close report", "time": "16:12"}
+  ],
+  "cleanup": "Friday 2026-11-20 close report deletes all three tasks."
+}
