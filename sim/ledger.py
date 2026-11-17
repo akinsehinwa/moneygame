@@ -125,12 +125,13 @@ def cmd_place(a):
     o = {"id": oid, "symbol": sym, "side": "buy", "qty": qty, "limit": a.limit, "stop": a.stop,
          "target": a.target, "tif": a.tif, "placed_at": now,
          "expires_at": session_close_ts(now) if a.tif == "day" else None,
-         "status": "open", "reason": a.reason}
+         "status": "open", "reason": a.reason, "strategy": a.strategy, "regime": a.regime,
+         "orig_stop": a.stop}
     s["orders"].append(o)
     save(s)
     risk = qty * (a.limit - a.stop)
     log(f"PLACE #{oid} BUY {qty} {sym} LMT {a.limit} | target {a.target} stop {a.stop} | "
-        f"${notional:.2f} ({notional/eq:.0%} of equity), max risk ${risk:.2f} | {a.reason}")
+        f"${notional:.2f} ({notional/eq:.0%} of equity), max risk ${risk:.2f} | [{a.strategy} @ {a.regime}] {a.reason}")
 
 
 def cmd_cancel(a):
@@ -188,7 +189,8 @@ def cmd_update(a=None):
                 o["status"] = "filled"
                 p = {"id": o["id"], "symbol": sym, "qty": o["qty"], "entry": px, "entry_time": t,
                      "stop": o["stop"], "target": o["target"], "reason": o["reason"],
-                     "processed_to": t + BAR}
+                     "strategy": o.get("strategy", "untagged"), "regime": o.get("regime", "untagged"),
+                     "orig_stop": o.get("orig_stop", o["stop"]), "processed_to": t + BAR}
                 s["positions"].append(p)
                 log(f"FILL #{o['id']} BUY {o['qty']} {sym} @ {px:.4f} at {fmt_t(t)} (${cost:.2f})")
                 if b["l"] <= p["stop"]:  # same-bar stop: assume the worst case happened
@@ -238,6 +240,46 @@ def cmd_report(a):
         print(f"  CLOSED #{c['id']} {c['symbol']} {c['qty']} {c['entry']:.2f}->{c['exit']:.2f} ({c['exit_reason']}) ${c['pnl']:+.2f}")
 
 
+def r_multiple(p, exit_px):
+    risk = p["entry"] - p.get("orig_stop", p["stop"])
+    return (exit_px - p["entry"]) / risk if risk > 0 else 0.0
+
+
+def cmd_stats(a):
+    """Performance by strategy and by regime: closed trades (realized) plus open positions (marked)."""
+    s = load()
+    rows = [(c, c["exit"], "closed") for c in s["closed"]]
+    rows += [(p, s["marks"].get(p["symbol"], p["entry"]), "open") for p in s["positions"]]
+    for key in ("strategy", "regime"):
+        groups = {}
+        for p, px, st in rows:
+            groups.setdefault(p.get(key, "untagged"), []).append((p, px, st))
+        print(f"== by {key} ==")
+        for g, items in sorted(groups.items()):
+            closed = [(p, px) for p, px, st in items if st == "closed"]
+            wins = sum(1 for p, px in closed if px > p["entry"])
+            pnl = sum(p["qty"] * (px - p["entry"]) for p, px, _ in items)
+            avg_r = sum(r_multiple(p, px) for p, px, _ in items) / len(items)
+            print(f"  {g}: {len(items)} trades ({len(closed)} closed, {wins} wins), "
+                  f"P&L ${pnl:+.2f}, avg R {avg_r:+.2f}")
+
+
+def cmd_snapshot(a):
+    """Append today's closing equity and SPY close to sim/equity.csv (one row per date)."""
+    s = load()
+    spy = fetch_bars("SPY", time.time() - 5 * 86400)
+    day = datetime.now(ET).strftime("%Y-%m-%d")
+    path = os.path.join(HERE, "equity.csv")
+    lines = []
+    if os.path.exists(path):
+        with open(path) as f:
+            lines = [l for l in f.read().splitlines()[1:] if not l.startswith(day)]
+    lines.append(f"{day},{equity(s):.4f},{s['cash']:.4f},{spy[-1]['c'] if spy else ''}")
+    with open(path, "w") as f:
+        f.write("date,equity,cash,spy_close\n" + "\n".join(lines) + "\n")
+    print(lines[-1])
+
+
 def main():
     ap = argparse.ArgumentParser()
     sp = ap.add_subparsers(dest="cmd", required=True)
@@ -247,16 +289,19 @@ def main():
     p.add_argument("--limit", type=float, required=True); p.add_argument("--stop", type=float, required=True)
     p.add_argument("--target", type=float, required=True); p.add_argument("--tif", default="day", choices=["day", "gtc"])
     p.add_argument("--reason", required=True)
+    p.add_argument("--strategy", required=True, help="playbook strategy name from STRATEGY.md")
+    p.add_argument("--regime", required=True, help="regime label from sim/regime.py")
     c = sp.add_parser("cancel"); c.add_argument("id", type=int)
     m = sp.add_parser("modify"); m.add_argument("id", type=int)
     m.add_argument("--stop", type=float); m.add_argument("--target", type=float); m.add_argument("--reason", required=True)
     e = sp.add_parser("exit"); e.add_argument("id", type=int); e.add_argument("--limit", type=float, required=True)
     e.add_argument("--reason", required=True)
     u = sp.add_parser("update"); u.add_argument("--all", action="store_true")
-    sp.add_parser("report")
+    sp.add_parser("report"); sp.add_parser("stats"); sp.add_parser("snapshot")
     a = ap.parse_args()
     {"place": cmd_place, "cancel": cmd_cancel, "modify": cmd_modify, "exit": cmd_exit,
-     "update": cmd_update, "report": cmd_report}[a.cmd](a)
+     "update": cmd_update, "report": cmd_report,
+     "stats": cmd_stats, "snapshot": cmd_snapshot}[a.cmd](a)
 
 
 if __name__ == "__main__":

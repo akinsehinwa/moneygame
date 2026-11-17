@@ -24,5 +24,17 @@
     "2026-11-27 early close 13:00 ET",
     "2026-12-24 early close 13:00 ET",
     "2026-12-25 closed (Christmas)"
-  ]
+  ],
+  "reporting": {
+    "daily": "one concise update after the close",
+    "weekly_review": [
+      "2026-11-20",
+      "2026-11-27",
+      "2026-12-04",
+      "2026-12-11",
+      "2026-12-18"
+    ],
+    "one_week_left_review": "2026-12-24",
+    "final": "2026-12-31"
+  }
 }

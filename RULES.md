@@ -10,6 +10,8 @@
 
 ## Defaults I chose (the organizer did not specify)
 - Universe: US-listed stocks and ETFs, long only, regular session (9:30-16:00 ET). No options, crypto, shorting or margin.
+  Unleveraged inverse index ETFs (e.g. SH, PSQ) may be bought in downtrend regimes (added 2026-11-17); no leveraged ETFs.
+- Strategy by regime: see STRATEGY.md. Every order must carry `--strategy` and `--regime` tags.
 - Fractional quantities allowed (4 decimals). Commission-free. No settlement or PDT limits are modeled.
 - Score = cash + open positions marked at the last completed 5-minute close on Thu 2026-12-31.
 
@@ -34,9 +36,12 @@ Every action is appended to `sim/events.log`; state is in `sim/state.json`. Both
 
 ## Usage
 ```
-python3 sim/ledger.py place SYM --dollars 24 --limit L --stop S --target T --reason "..."
+python3 sim/regime.py                # today's regime label (logged to sim/regime_log.csv)
+python3 sim/ledger.py place SYM --dollars 24 --limit L --stop S --target T --reason "..." --strategy NAME --regime LABEL
 python3 sim/ledger.py update        # process new bars: fills, stops, targets, expiries
 python3 sim/ledger.py report
+python3 sim/ledger.py stats         # results by strategy and regime
+python3 sim/ledger.py snapshot      # append closing equity + SPY to sim/equity.csv
 python3 sim/ledger.py modify ID --stop S --reason "..."   # e.g. trail a stop
 python3 sim/ledger.py exit ID --limit P --reason "..."    # move target to exit
 python3 sim/ledger.py cancel ID
