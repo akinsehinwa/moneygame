@@ -5,7 +5,7 @@
     "XLF": 58.16999816894531,
     "XLP": 92.62999725341797,
     "XLU": 44.130001068115234,
-    "XLV": 187.91000366210938
+    "XLV": 187.8800048828125
   },
   "next_id": 5,
   "orders": [
@@ -112,7 +112,7 @@
       "entry_time": 1794847500,
       "id": 1,
       "orig_stop": 185.2,
-      "processed_to": 1794862800,
+      "processed_to": 1794863100,
       "qty": 0.1217,
       "reason": "Health care is the strongest sector (RSI 67, above 20EMA, +0.9% pre-mkt) in a risk-off tape; buy a dip to Friday's close, stop under 5-day low, target ~1.5 ATR",
       "regime": "down/normal/risk-off",
