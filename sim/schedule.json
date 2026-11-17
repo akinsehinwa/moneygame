@@ -1,6 +1,6 @@
 {
   "timezone": "America/New_York",
-  "window": "2026-11-16 to 2026-12-07 (NYSE trading days; extended on 2026-11-17)",
+  "window": "2026-11-16 to 2026-12-31 (NYSE trading days; ends 16:00 ET Thu 2026-12-31)",
   "tasks": [
     {
       "id": "trig_011rQaSsrNKGFCb4i9VCMyjf",
@@ -18,9 +18,11 @@
       "time": "16:12"
     }
   ],
-  "cleanup": "Mon 2026-12-07 close report writes the FINAL report and deletes all three tasks.",
+  "cleanup": "Thu 2026-12-31 close report writes the FINAL report and deletes all three tasks.",
   "holidays": [
     "2026-11-26 closed (Thanksgiving)",
-    "2026-11-27 early close 13:00 ET"
+    "2026-11-27 early close 13:00 ET",
+    "2026-12-24 early close 13:00 ET",
+    "2026-12-25 closed (Christmas)"
   ]
 }

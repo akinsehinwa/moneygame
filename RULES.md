@@ -1,7 +1,7 @@
 # Competition rules & simulation method
 
 ## Competition (set by the organizer)
-- Start: $100 simulated paper account on Mon 2026-11-16. Originally 5 trading days; **extended on 2026-11-17 to 21 calendar days: final close Mon 2026-12-07** (15 trading days; market closed Thu 2026-11-26 for Thanksgiving, early 13:00 ET close Fri 2026-11-27).
+- Start: $100 simulated paper account on Mon 2026-11-16. Originally 5 trading days; **extended on 2026-11-17 to year end: the competition ends at the 16:00 ET close on Thu 2026-12-31** (32 trading days; market closed Thu 2026-11-26 and Fri 2026-12-25; early 13:00 ET closes Fri 2026-11-27 and Thu 2026-12-24).
 - Lowest final balance is eliminated.
 - No position may exceed 25% of the account (checked at order entry, including any resting orders in the same symbol).
 - Limit orders only. Every trade has a planned exit (target) and a stop loss.
@@ -11,7 +11,7 @@
 ## Defaults I chose (the organizer did not specify)
 - Universe: US-listed stocks and ETFs, long only, regular session (9:30-16:00 ET). No options, crypto, shorting or margin.
 - Fractional quantities allowed (4 decimals). Commission-free. No settlement or PDT limits are modeled.
-- Score = cash + open positions marked at the last completed 5-minute close on Mon 2026-12-07.
+- Score = cash + open positions marked at the last completed 5-minute close on Thu 2026-12-31.
 
 ## How fills are simulated (`sim/ledger.py`)
 Data: Yahoo Finance 5-minute regular-session bars; TradingView is used for research and spot checks.
