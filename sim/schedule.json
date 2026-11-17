@@ -1,10 +1,26 @@
 {
   "timezone": "America/New_York",
-  "window": "2026-11-16 to 2026-11-20 (weekdays)",
+  "window": "2026-11-16 to 2026-12-07 (NYSE trading days; extended on 2026-11-17)",
   "tasks": [
-    {"id": "trig_011rQaSsrNKGFCb4i9VCMyjf", "name": "pre-market plan", "time": "08:47"},
-    {"id": "trig_016pWqK7vobPDC1mmKrrYUds", "name": "midday check", "time": "12:37"},
-    {"id": "trig_01QCcpYKie2bxh9RwfzGjQKK", "name": "close report", "time": "16:12"}
+    {
+      "id": "trig_011rQaSsrNKGFCb4i9VCMyjf",
+      "name": "pre-market plan",
+      "time": "08:47"
+    },
+    {
+      "id": "trig_016pWqK7vobPDC1mmKrrYUds",
+      "name": "midday check",
+      "time": "12:37"
+    },
+    {
+      "id": "trig_01QCcpYKie2bxh9RwfzGjQKK",
+      "name": "close report",
+      "time": "16:12"
+    }
   ],
-  "cleanup": "Friday 2026-11-20 close report deletes all three tasks."
+  "cleanup": "Mon 2026-12-07 close report writes the FINAL report and deletes all three tasks.",
+  "holidays": [
+    "2026-11-26 closed (Thanksgiving)",
+    "2026-11-27 early close 13:00 ET"
+  ]
 }
