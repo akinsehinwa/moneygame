@@ -1,5 +1,5 @@
 {
-  "cash": 76.07835,
+  "cash": 30.992034340576172,
   "closed": [
     {
       "entry": 58.4,
@@ -39,10 +39,13 @@
     }
   ],
   "marks": {
+    "SPY": 733.4019775390625,
+    "XLB": 50.689998626708984,
     "XLF": 57.06999969482422,
     "XLP": 92.62999725341797,
-    "XLU": 43.41999816894531,
-    "XLV": 185.24000549316406
+    "XLU": 43.649898529052734,
+    "XLV": 185.24000549316406,
+    "XLY": 119.68499755859375
   },
   "next_id": 8,
   "orders": [
@@ -124,7 +127,7 @@
       "reason": "Dip-buy: RSI(2) 2.5 (most oversold sector), VIX 24 so below-200d allowed; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (51.98), 7-day time stop",
       "regime": "down/high/risk-off",
       "side": "buy",
-      "status": "open",
+      "status": "filled",
       "stop": 48.09,
       "strategy": "range-mean-reversion",
       "symbol": "XLB",
@@ -158,7 +161,7 @@
       "reason": "Dip-buy: SPY RSI(2) 5.5, sitting on its 200d SMA after -2.9% in 2 days; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (748.74), 7-day time stop",
       "regime": "down/high/risk-off",
       "side": "buy",
-      "status": "open",
+      "status": "filled",
       "stop": 697.09,
       "strategy": "range-mean-reversion",
       "symbol": "SPY",
@@ -172,7 +175,7 @@
       "entry_time": 1794847200,
       "id": 3,
       "orig_stop": 43.1,
-      "processed_to": 1794949500,
+      "processed_to": 1795023300,
       "qty": 0.5227,
       "reason": "Utilities at 20-day high with defensive rotation; buy at Friday's close, stop under 5-day low, target +3%",
       "regime": "down/normal/risk-off",
@@ -180,6 +183,34 @@
       "strategy": "defensive-leader-pullback",
       "symbol": "XLU",
       "target": 45.4
+    },
+    {
+      "entry": 732.44,
+      "entry_time": 1795012500,
+      "id": 7,
+      "orig_stop": 697.09,
+      "processed_to": 1795023300,
+      "qty": 0.0309,
+      "reason": "Dip-buy: SPY RSI(2) 5.5, sitting on its 200d SMA after -2.9% in 2 days; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (748.74), 7-day time stop",
+      "regime": "down/high/risk-off",
+      "stop": 697.09,
+      "strategy": "range-mean-reversion",
+      "symbol": "SPY",
+      "target": 785.47
+    },
+    {
+      "entry": 50.29999923706055,
+      "entry_time": 1795012200,
+      "id": 5,
+      "orig_stop": 48.09,
+      "processed_to": 1795023300,
+      "qty": 0.4464,
+      "reason": "Dip-buy: RSI(2) 2.5 (most oversold sector), VIX 24 so below-200d allowed; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (51.98), 7-day time stop",
+      "regime": "down/high/risk-off",
+      "stop": 48.09,
+      "strategy": "range-mean-reversion",
+      "symbol": "XLB",
+      "target": 54.97
     }
   ],
   "start_cash": 100.0
