@@ -39,13 +39,13 @@
     }
   ],
   "marks": {
-    "SPY": 733.4019775390625,
+    "SPY": 730.25,
     "XLB": 50.689998626708984,
     "XLF": 57.06999969482422,
     "XLP": 92.62999725341797,
-    "XLU": 43.649898529052734,
+    "XLU": 43.540000915527344,
     "XLV": 185.24000549316406,
-    "XLY": 119.68499755859375
+    "XLY": 119.19999694824219
   },
   "next_id": 8,
   "orders": [
@@ -144,7 +144,7 @@
       "reason": "Dip-buy: RSI(2) 3.0, above 200d; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (119.34), 7-day time stop",
       "regime": "down/high/risk-off",
       "side": "buy",
-      "status": "open",
+      "status": "expired",
       "stop": 110.35,
       "strategy": "range-mean-reversion",
       "symbol": "XLY",
@@ -175,7 +175,7 @@
       "entry_time": 1794847200,
       "id": 3,
       "orig_stop": 43.1,
-      "processed_to": 1795023300,
+      "processed_to": 1795035900,
       "qty": 0.5227,
       "reason": "Utilities at 20-day high with defensive rotation; buy at Friday's close, stop under 5-day low, target +3%",
       "regime": "down/normal/risk-off",
@@ -189,7 +189,7 @@
       "entry_time": 1795012500,
       "id": 7,
       "orig_stop": 697.09,
-      "processed_to": 1795023300,
+      "processed_to": 1795035900,
       "qty": 0.0309,
       "reason": "Dip-buy: SPY RSI(2) 5.5, sitting on its 200d SMA after -2.9% in 2 days; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (748.74), 7-day time stop",
       "regime": "down/high/risk-off",
