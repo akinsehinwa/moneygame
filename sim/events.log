@@ -9,3 +9,6 @@
 2026-11-16 16:12:44 EST | EXPIRE #2 XLP (day order unfilled)
 2026-11-18 02:21:11 EST | EXIT #4 SELL 0.3938 XLF @ 57.2000 (stop) at 2026-11-17 10:45 ET | P&L $-0.47
 2026-11-18 02:21:12 EST | EXIT #1 SELL 0.1217 XLV @ 185.2000 (stop) at 2026-11-17 14:00 ET | P&L $-0.45
+2026-11-18 08:48:56 EST | PLACE #5 BUY 0.4464 XLB LMT 50.84 | target 54.97 stop 48.09 | $22.69 (23% of equity), max risk $1.23 | [range-mean-reversion @ down/high/risk-off] Dip-buy: RSI(2) 2.5 (most oversold sector), VIX 24 so below-200d allowed; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (51.98), 7-day time stop
+2026-11-18 08:48:56 EST | PLACE #6 BUY 0.1938 XLY LMT 117.1 | target 127.23 stop 110.35 | $22.69 (23% of equity), max risk $1.31 | [range-mean-reversion @ down/high/risk-off] Dip-buy: RSI(2) 3.0, above 200d; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (119.34), 7-day time stop
+2026-11-18 08:48:56 EST | PLACE #7 BUY 0.0309 SPY LMT 732.44 | target 785.47 stop 697.09 | $22.63 (23% of equity), max risk $1.09 | [range-mean-reversion @ down/high/risk-off] Dip-buy: SPY RSI(2) 5.5, sitting on its 200d SMA after -2.9% in 2 days; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (748.74), 7-day time stop

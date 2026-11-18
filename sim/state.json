@@ -44,7 +44,7 @@
     "XLU": 43.41999816894531,
     "XLV": 185.24000549316406
   },
-  "next_id": 5,
+  "next_id": 8,
   "orders": [
     {
       "expires_at": 1794862800,
@@ -112,6 +112,57 @@
       "strategy": "defensive-leader-pullback",
       "symbol": "XLF",
       "target": 60.1,
+      "tif": "day"
+    },
+    {
+      "expires_at": 1795035600,
+      "id": 5,
+      "limit": 50.84,
+      "orig_stop": 48.09,
+      "placed_at": 1795009736,
+      "qty": 0.4464,
+      "reason": "Dip-buy: RSI(2) 2.5 (most oversold sector), VIX 24 so below-200d allowed; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (51.98), 7-day time stop",
+      "regime": "down/high/risk-off",
+      "side": "buy",
+      "status": "open",
+      "stop": 48.09,
+      "strategy": "range-mean-reversion",
+      "symbol": "XLB",
+      "target": 54.97,
+      "tif": "day"
+    },
+    {
+      "expires_at": 1795035600,
+      "id": 6,
+      "limit": 117.1,
+      "orig_stop": 110.35,
+      "placed_at": 1795009736,
+      "qty": 0.1938,
+      "reason": "Dip-buy: RSI(2) 3.0, above 200d; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (119.34), 7-day time stop",
+      "regime": "down/high/risk-off",
+      "side": "buy",
+      "status": "open",
+      "stop": 110.35,
+      "strategy": "range-mean-reversion",
+      "symbol": "XLY",
+      "target": 127.23,
+      "tif": "day"
+    },
+    {
+      "expires_at": 1795035600,
+      "id": 7,
+      "limit": 732.44,
+      "orig_stop": 697.09,
+      "placed_at": 1795009736,
+      "qty": 0.0309,
+      "reason": "Dip-buy: SPY RSI(2) 5.5, sitting on its 200d SMA after -2.9% in 2 days; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (748.74), 7-day time stop",
+      "regime": "down/high/risk-off",
+      "side": "buy",
+      "status": "open",
+      "stop": 697.09,
+      "strategy": "range-mean-reversion",
+      "symbol": "SPY",
+      "target": 785.47,
       "tif": "day"
     }
   ],
