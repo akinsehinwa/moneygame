@@ -99,6 +99,8 @@ def append(row):
 
 if __name__ == "__main__":
     r = classify()
+    if "--date" in sys.argv:  # label a late run with the session it describes
+        r["date"] = sys.argv[sys.argv.index("--date") + 1]
     if "--no-log" not in sys.argv:
         append(r)
     print(json.dumps(r, indent=2))

@@ -268,7 +268,7 @@ def cmd_snapshot(a):
     """Append today's closing equity and SPY close to sim/equity.csv (one row per date)."""
     s = load()
     spy = fetch_bars("SPY", time.time() - 5 * 86400)
-    day = datetime.now(ET).strftime("%Y-%m-%d")
+    day = getattr(a, "date", None) or datetime.now(ET).strftime("%Y-%m-%d")
     path = os.path.join(HERE, "equity.csv")
     lines = []
     if os.path.exists(path):
@@ -297,7 +297,8 @@ def main():
     e = sp.add_parser("exit"); e.add_argument("id", type=int); e.add_argument("--limit", type=float, required=True)
     e.add_argument("--reason", required=True)
     u = sp.add_parser("update"); u.add_argument("--all", action="store_true")
-    sp.add_parser("report"); sp.add_parser("stats"); sp.add_parser("snapshot")
+    sp.add_parser("report"); sp.add_parser("stats")
+    sn = sp.add_parser("snapshot"); sn.add_argument("--date", help="session date if run late (YYYY-MM-DD)")
     a = ap.parse_args()
     {"place": cmd_place, "cancel": cmd_cancel, "modify": cmd_modify, "exit": cmd_exit,
      "update": cmd_update, "report": cmd_report,

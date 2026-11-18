@@ -1,11 +1,48 @@
 {
-  "cash": 31.01415,
-  "closed": [],
+  "cash": 76.07835,
+  "closed": [
+    {
+      "entry": 58.4,
+      "entry_time": 1794842700,
+      "exit": 57.2,
+      "exit_reason": "stop",
+      "exit_time": 1794930300,
+      "id": 4,
+      "orig_stop": 57.2,
+      "pnl": -0.4726,
+      "processed_to": 1794930300,
+      "qty": 0.3938,
+      "reason": "Financials trending (RSI 62, +5.5%/1M) and flat pre-mkt while tech gaps down; buy dip, stop under 5-day low, target 20-day high",
+      "regime": "down/normal/risk-off",
+      "stop": 57.2,
+      "strategy": "defensive-leader-pullback",
+      "symbol": "XLF",
+      "target": 60.1
+    },
+    {
+      "entry": 188.9,
+      "entry_time": 1794847500,
+      "exit": 185.2,
+      "exit_reason": "stop",
+      "exit_time": 1794942000,
+      "id": 1,
+      "orig_stop": 185.2,
+      "pnl": -0.4503,
+      "processed_to": 1794942000,
+      "qty": 0.1217,
+      "reason": "Health care is the strongest sector (RSI 67, above 20EMA, +0.9% pre-mkt) in a risk-off tape; buy a dip to Friday's close, stop under 5-day low, target ~1.5 ATR",
+      "regime": "down/normal/risk-off",
+      "stop": 185.2,
+      "strategy": "defensive-leader-pullback",
+      "symbol": "XLV",
+      "target": 194.5
+    }
+  ],
   "marks": {
-    "XLF": 58.16999816894531,
+    "XLF": 57.06999969482422,
     "XLP": 92.62999725341797,
-    "XLU": 44.130001068115234,
-    "XLV": 187.8800048828125
+    "XLU": 43.41999816894531,
+    "XLV": 185.24000549316406
   },
   "next_id": 5,
   "orders": [
@@ -80,25 +117,11 @@
   ],
   "positions": [
     {
-      "entry": 58.4,
-      "entry_time": 1794842700,
-      "id": 4,
-      "orig_stop": 57.2,
-      "processed_to": 1794863100,
-      "qty": 0.3938,
-      "reason": "Financials trending (RSI 62, +5.5%/1M) and flat pre-mkt while tech gaps down; buy dip, stop under 5-day low, target 20-day high",
-      "regime": "down/normal/risk-off",
-      "stop": 57.2,
-      "strategy": "defensive-leader-pullback",
-      "symbol": "XLF",
-      "target": 60.1
-    },
-    {
       "entry": 44.0,
       "entry_time": 1794847200,
       "id": 3,
       "orig_stop": 43.1,
-      "processed_to": 1794863100,
+      "processed_to": 1794949500,
       "qty": 0.5227,
       "reason": "Utilities at 20-day high with defensive rotation; buy at Friday's close, stop under 5-day low, target +3%",
       "regime": "down/normal/risk-off",
@@ -106,20 +129,6 @@
       "strategy": "defensive-leader-pullback",
       "symbol": "XLU",
       "target": 45.4
-    },
-    {
-      "entry": 188.9,
-      "entry_time": 1794847500,
-      "id": 1,
-      "orig_stop": 185.2,
-      "processed_to": 1794863100,
-      "qty": 0.1217,
-      "reason": "Health care is the strongest sector (RSI 67, above 20EMA, +0.9% pre-mkt) in a risk-off tape; buy a dip to Friday's close, stop under 5-day low, target ~1.5 ATR",
-      "regime": "down/normal/risk-off",
-      "stop": 185.2,
-      "strategy": "defensive-leader-pullback",
-      "symbol": "XLV",
-      "target": 194.5
     }
   ],
   "start_cash": 100.0

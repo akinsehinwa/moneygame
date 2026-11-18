@@ -19,6 +19,7 @@ with `--strategy <name> --regime <label>`, and `python3 sim/ledger.py stats` rep
 | **up / high** | `trend-leader-pullback` (half size) | As above, fewer positions | 60% | Tighter: 0.75 ATR |
 | **range / any** | `range-mean-reversion` | Quality ETFs at range support with 2-day RSI < 10 | 50-70% | Stop under the range; target the range midpoint (1-1.5R) |
 | **down / normal-high / risk-off** | `defensive-leader-pullback`, `inverse-index-trend` | Defensive-sector leaders; unleveraged inverse ETFs (SH, PSQ) on failed bounces | 50-70% | Stop above/below the last swing; target 1.5-2R |
+| **down / any, breadth <= 3/11** (provisional) | `cash`, `inverse-index-trend` | Liquidation: defensives fall too. No defensive longs; SH only on a failed bounce | 30% | Stop above the bounce high; target 1.5R |
 | **down / extreme** | `capitulation-bounce` | SPY/QQQ after a VIX spike >30 plus a reversal day, small size | 25-40% | Stop under the reversal-day low; target 1.5R, take it fast |
 | **any, unclear signal** | `cash` | Nothing. Doing nothing is a valid position. | 0-30% | n/a |
 
@@ -38,3 +39,4 @@ risk about 1-2% of equity per trade, no single stocks held through earnings, onl
 | 2026-11-16 | Started with `defensive-leader-pullback` (regime: down/normal/risk-off) | Tech-led sell-off, defensives above 20-day EMA |
 | 2026-11-17 | Added regime detection, strategy tagging, playbook, and unleveraged inverse ETFs for downtrends | Competition extended to 2026-12-31; organizer asked for an adaptive system |
 | 2026-11-17 | Leaders: set entries ~0.3% below last price, not at the prior close | XLP limit at the prior close never filled on Day 1, missing the best performer |
+| 2026-11-17 | PROVISIONAL: pause `defensive-leader-pullback` when breadth <= 3/11; cap exposure at 30% | Day 2: breadth 7/11 → 3/11; XLV and XLF both stopped (−1R each) as defensives fell with SPY. Only 2 trades, so re-test at the 11-20 review |
