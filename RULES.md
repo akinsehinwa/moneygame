@@ -10,7 +10,7 @@
 
 ## Defaults I chose (the organizer did not specify)
 - Universe: US-listed stocks and ETFs, long only, regular session (9:30-16:00 ET). No options, crypto, shorting or margin.
-  Unleveraged inverse index ETFs (e.g. SH, PSQ) may be bought in downtrend regimes (added 2026-11-17); no leveraged ETFs.
+  No leveraged ETFs. (Inverse ETFs were allowed on 2026-11-17 and dropped on 2026-11-18 after the backtest.)
 - Strategy by regime: see STRATEGY.md. Every order must carry `--strategy` and `--regime` tags.
 - Fractional quantities allowed (4 decimals). Commission-free. No settlement or PDT limits are modeled.
 - Score = cash + open positions marked at the last completed 5-minute close on Thu 2026-12-31.
@@ -45,4 +45,12 @@ python3 sim/ledger.py snapshot      # append closing equity + SPY to sim/equity.
 python3 sim/ledger.py modify ID --stop S --reason "..."   # e.g. trail a stop
 python3 sim/ledger.py exit ID --limit P --reason "..."    # move target to exit
 python3 sim/ledger.py cancel ID
+```
+
+## Historical backtest
+```
+python3 sim/fetch_history.py        # download 1999->today daily data into sim/data/ (git-ignored)
+python3 sim/backtest.py             # playbooks vs SPY on TRAIN 1999-2014 and VALIDATE 2015-2020
+python3 sim/backtest.py --optimize  # grid search on TRAIN, checked on VALIDATE
+python3 sim/backtest.py --test      # adds the held-out TEST 2021-2026 (run once, at the end)
 ```
