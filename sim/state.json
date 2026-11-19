@@ -47,7 +47,7 @@
     "XLV": 185.24000549316406,
     "XLY": 119.19999694824219
   },
-  "next_id": 8,
+  "next_id": 11,
   "orders": [
     {
       "expires_at": 1794862800,
@@ -167,12 +167,64 @@
       "symbol": "SPY",
       "target": 785.47,
       "tif": "day"
+    },
+    {
+      "expires_at": 1795122000,
+      "id": 8,
+      "limit": 125.4,
+      "orig_stop": 106.6,
+      "placed_at": 1795062336,
+      "qty": 0.1953,
+      "reason": "3x S&P dip-buy: SPY RSI(2) 4.4 with VIX 24 (backtested lev-dip-buy, 68% win rate 1999-2014). Entry 125.40, target +22.5% (1.5R) or first SPY close above its 5-day SMA, stop -15% (2.5 ATR)",
+      "regime": "down/high/risk-off",
+      "side": "buy",
+      "status": "open",
+      "stop": 106.6,
+      "strategy": "lev-dip-buy",
+      "symbol": "UPRO",
+      "target": 153.6,
+      "tif": "day"
+    },
+    {
+      "expires_at": 1795122000,
+      "id": 9,
+      "limit": 151.0,
+      "orig_stop": 125.0,
+      "placed_at": 1795062336,
+      "qty": 0.1622,
+      "reason": "NVDA RSI(2) 2.2, -32% in 20 days on the CEO ouster after blowout earnings (earnings risk already past). Panic rebound toward the 20-day SMA. Entry 151, target 189 (+25%), stop 125 (-17%)",
+      "regime": "down/high/risk-off",
+      "side": "buy",
+      "status": "open",
+      "stop": 125.0,
+      "strategy": "event-panic-rebound",
+      "symbol": "NVDA",
+      "target": 189.0,
+      "tif": "day"
+    },
+    {
+      "expires_at": 1795122000,
+      "id": 10,
+      "limit": 391.0,
+      "orig_stop": 345.0,
+      "placed_at": 1795062336,
+      "qty": 0.0626,
+      "reason": "APP: top momentum large cap (+46% in 20 days), first pullback (RSI(2) 19.8). Entry 391, target 460 (+18%, 1.5R), stop 345 (-12%)",
+      "regime": "down/high/risk-off",
+      "side": "buy",
+      "status": "open",
+      "stop": 345.0,
+      "strategy": "momentum-pullback",
+      "symbol": "APP",
+      "target": 460.0,
+      "tif": "day"
     }
   ],
   "positions": [
     {
       "entry": 44.0,
       "entry_time": 1794847200,
+      "exiting": true,
       "id": 3,
       "orig_stop": 43.1,
       "processed_to": 1795035900,
@@ -182,11 +234,12 @@
       "stop": 43.1,
       "strategy": "defensive-leader-pullback",
       "symbol": "XLU",
-      "target": 45.4
+      "target": 43.4
     },
     {
       "entry": 732.44,
       "entry_time": 1795012500,
+      "exiting": true,
       "id": 7,
       "orig_stop": 697.09,
       "processed_to": 1795035900,
@@ -196,11 +249,12 @@
       "stop": 697.09,
       "strategy": "range-mean-reversion",
       "symbol": "SPY",
-      "target": 785.47
+      "target": 729.0
     },
     {
       "entry": 50.29999923706055,
       "entry_time": 1795012200,
+      "exiting": true,
       "id": 5,
       "orig_stop": 48.09,
       "processed_to": 1795023300,
@@ -210,7 +264,7 @@
       "stop": 48.09,
       "strategy": "range-mean-reversion",
       "symbol": "XLB",
-      "target": 54.97
+      "target": 50.2
     }
   ],
   "start_cash": 100.0

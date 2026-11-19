@@ -28,6 +28,8 @@ def load():
 
 
 def save(s):
+    for c in s.get("closed", []):
+        c.pop("_this_update", None)
     with open(STATE, "w") as f:
         json.dump(s, f, indent=2, sort_keys=True)
 
@@ -117,7 +119,8 @@ def cmd_place(a):
     existing += sum(o["qty"] * o["limit"] for o in s["orders"] if o["symbol"] == sym and o["status"] == "open")
     if existing + notional > MAX_POS_PCT * eq + 1e-9:
         sys.exit(f"Rejected: combined {sym} exposure would exceed 25% cap.")
-    avail = s["cash"] - reserved_cash(s)
+    incoming = sum(p["qty"] * p["target"] for p in s["positions"] if p.get("exiting"))
+    avail = s["cash"] + incoming - reserved_cash(s)
     if notional > avail + 1e-9:
         sys.exit(f"Rejected: ${notional:.2f} > available cash ${avail:.2f}.")
     now = int(time.time())
@@ -159,58 +162,86 @@ def close_position(s, p, price, ts, why):
     proceeds = p["qty"] * price
     s["cash"] += proceeds
     pnl = proceeds - p["qty"] * p["entry"]
-    rec = dict(p, exit=price, exit_time=ts, exit_reason=why, pnl=round(pnl, 4))
+    rec = dict(p, exit=price, exit_time=ts, exit_reason=why, pnl=round(pnl, 4), _this_update=True)
     s["closed"].append(rec)
     s["positions"].remove(p)
     log(f"EXIT #{p['id']} SELL {p['qty']} {p['symbol']} @ {price:.4f} ({why}) at {fmt_t(ts)} | P&L ${pnl:+.2f}")
 
 
 def cmd_update(a=None):
+    """Replay all new 5-minute bars across every symbol in time order.
+
+    At each bar time, exits are processed before entries, so cash freed by a sale is available to a buy
+    on the same or a later bar. A buy only fills if cash covers it at that moment.
+    """
     s = load()
     syms = {o["symbol"] for o in s["orders"] if o["status"] == "open"} | {p["symbol"] for p in s["positions"]}
     syms |= set(s["marks"].keys()) if a and getattr(a, "all", False) else set()
     now = int(time.time())
+    events = []
     for sym in sorted(syms):
         starts = [o["placed_at"] for o in s["orders"] if o["symbol"] == sym and o["status"] == "open"]
         starts += [p["processed_to"] for p in s["positions"] if p["symbol"] == sym]
-        start = min(starts) if starts else now - 86400
-        bars = fetch_bars(sym, start)
-        for b in bars:
-            t = b["t"]
-            # 1) entries: bar must START at/after placement
-            for o in [o for o in s["orders"] if o["symbol"] == sym and o["status"] == "open"]:
-                if o["expires_at"] and t >= o["expires_at"]:
-                    o["status"] = "expired"; log(f"EXPIRE #{o['id']} {sym} (day order unfilled)"); continue
-                if t < o["placed_at"] or b["l"] > o["limit"]:
-                    continue
-                px = min(o["limit"], b["o"])
-                cost = o["qty"] * px
-                s["cash"] -= cost
-                o["status"] = "filled"
-                p = {"id": o["id"], "symbol": sym, "qty": o["qty"], "entry": px, "entry_time": t,
-                     "stop": o["stop"], "target": o["target"], "reason": o["reason"],
-                     "strategy": o.get("strategy", "untagged"), "regime": o.get("regime", "untagged"),
-                     "orig_stop": o.get("orig_stop", o["stop"]), "processed_to": t + BAR}
-                s["positions"].append(p)
-                log(f"FILL #{o['id']} BUY {o['qty']} {sym} @ {px:.4f} at {fmt_t(t)} (${cost:.2f})")
-                if b["l"] <= p["stop"]:  # same-bar stop: assume the worst case happened
-                    close_position(s, p, min(p["stop"], px), t, "stop (fill bar)")
-            # 2) exits on bars after the fill bar; stop wins if both levels touched in one bar
-            for p in [p for p in s["positions"] if p["symbol"] == sym]:
-                if t < p["processed_to"]:
-                    continue
-                if b["l"] <= p["stop"]:
-                    close_position(s, p, min(p["stop"], b["o"]), t, "stop"); continue
-                if b["h"] >= p["target"]:
-                    close_position(s, p, max(p["target"], b["o"]), t, "target"); continue
-                p["processed_to"] = t + BAR
-        # expire day orders whose session ended with no further bars
-        for o in s["orders"]:
-            if o["symbol"] == sym and o["status"] == "open" and o["expires_at"] and now >= o["expires_at"] + 600:
-                o["status"] = "expired"; log(f"EXPIRE #{o['id']} {sym} (day order unfilled)")
+        bars = fetch_bars(sym, min(starts) if starts else now - 86400)
+        events += [(b["t"], sym, b) for b in bars]
         if bars:
             s["marks"][sym] = bars[-1]["c"]
+    events.sort(key=lambda e: (e[0], e[1]))
+    for t, sym, b in events:
+        # 1) exits on bars after the fill bar; stop wins if both levels touched in one bar
+        for p in [p for p in s["positions"] if p["symbol"] == sym]:
+            if t < p["processed_to"]:
+                continue
+            if b["l"] <= p["stop"]:
+                close_position(s, p, min(p["stop"], b["o"]), t, "stop"); continue
+            if b["h"] >= p["target"]:
+                close_position(s, p, max(p["target"], b["o"]), t, "exit order" if p.get("exiting") else "target")
+                continue
+            p["processed_to"] = t + BAR
+    # entries are replayed in a second pass in time order, so every exit up to time t has already
+    # credited cash when an entry at time t is considered (exits never depend on entries in other symbols)
+    for t, sym, b in events:
+        for o in [o for o in s["orders"] if o["symbol"] == sym and o["status"] == "open"]:
+            if o["expires_at"] and t >= o["expires_at"]:
+                o["status"] = "expired"; log(f"EXPIRE #{o['id']} {sym} (day order unfilled)"); continue
+            if t < o["placed_at"] or b["l"] > o["limit"]:
+                continue
+            px = min(o["limit"], b["o"])
+            cost = o["qty"] * px
+            if cost > cash_at(s, t) + 1e-9:
+                continue  # not enough settled cash yet at this bar; try later bars
+            s["cash"] -= cost
+            o["status"] = "filled"
+            p = {"id": o["id"], "symbol": sym, "qty": o["qty"], "entry": px, "entry_time": t,
+                 "stop": o["stop"], "target": o["target"], "reason": o["reason"],
+                 "strategy": o.get("strategy", "untagged"), "regime": o.get("regime", "untagged"),
+                 "orig_stop": o.get("orig_stop", o["stop"]), "processed_to": t + BAR}
+            s["positions"].append(p)
+            log(f"FILL #{o['id']} BUY {o['qty']} {sym} @ {px:.4f} at {fmt_t(t)} (${cost:.2f})")
+            if b["l"] <= p["stop"]:  # same-bar stop: assume the worst case happened
+                close_position(s, p, min(p["stop"], px), t, "stop (fill bar)")
+    # positions opened in pass 2 still need their later bars checked for stops/targets
+    for t, sym, b in events:
+        for p in [p for p in s["positions"] if p["symbol"] == sym]:
+            if t < p["processed_to"]:
+                continue
+            if b["l"] <= p["stop"]:
+                close_position(s, p, min(p["stop"], b["o"]), t, "stop"); continue
+            if b["h"] >= p["target"]:
+                close_position(s, p, max(p["target"], b["o"]), t, "target"); continue
+            p["processed_to"] = t + BAR
+    for o in s["orders"]:  # expire day orders whose session ended with no further bars
+        if o["status"] == "open" and o["expires_at"] and now >= o["expires_at"] + 600:
+            o["status"] = "expired"; log(f"EXPIRE #{o['id']} {o['symbol']} (day order unfilled)")
     save(s)
+
+
+def cash_at(s, t):
+    """Cash available at bar time t: current cash minus proceeds of exits that happen after t
+    (pass 1 already credited all exits in this update; undo the ones later than t)."""
+    later = sum(c["qty"] * c["exit"] for c in s["closed"] if c.get("exit_time", 0) > t
+                and c.get("_this_update"))
+    return s["cash"] - later
 
 
 def cmd_exit(a):
@@ -218,7 +249,7 @@ def cmd_exit(a):
     s = load()
     for p in s["positions"]:
         if p["id"] == a.id:
-            old = p["target"]; p["target"] = a.limit; save(s)
+            old = p["target"]; p["target"] = a.limit; p["exiting"] = True; save(s)
             log(f"EXIT-ORDER #{a.id} {p['symbol']} sell limit {a.limit} (was target {old}) | {a.reason}")
             return
     sys.exit("No position with that id.")

@@ -30,15 +30,16 @@ DEFAULT = {"stop_atr": 1.5, "target_r": 2.5, "breadth_off": 3, "pullback_ema": 1
 
 # ---------------------------------------------------------------- data + indicators
 def load():
-    raw = {s: json.load(open(os.path.join(DATA, f"{s}.json"))) for s in SECTORS + ["SPY", "VIX"]}
+    raw = {s: json.load(open(os.path.join(DATA, f"{s}.json"))) for s in SECTORS + ["SPY", "QQQ", "VIX"]}
     dates = [r[0] for r in raw["SPY"]]
     idx = {s: {r[0]: r for r in rows} for s, rows in raw.items()}
     bars = {}
-    for s in SECTORS + ["SPY"]:
+    for s in SECTORS + ["SPY", "QQQ"]:
         rows = [idx[s].get(d) for d in dates]
-        for i, r in enumerate(rows):  # forward-fill rare gaps
+        first = next(r for r in rows if r is not None)
+        for i, r in enumerate(rows):  # back-fill the start, forward-fill rare gaps
             if r is None:
-                rows[i] = [dates[i]] + [rows[i - 1][4]] * 4
+                rows[i] = [dates[i]] + [rows[i - 1][4] if i else first[1]] * 4
         bars[s] = {k: [r[j] for r in rows] for k, j in (("o", 1), ("h", 2), ("l", 3), ("c", 4))}
     vix, last = [], 20.0
     for d in dates:
@@ -52,7 +53,18 @@ def load():
         f = lambda x: base * (1 - (x / pc - 1))
         o.append(f(sp["o"][i])); h.append(f(sp["l"][i])); l.append(f(sp["h"][i])); c.append(f(sp["c"][i]))
     bars["INV"] = {"o": o, "h": h, "l": l, "c": c}
+    for u in ("SPY", "QQQ"):  # synthetic 3x daily-rebalanced ETFs (UPRO/TQQQ stand-ins), ~1%/yr fee+financing drag
+        bars[u + "3"] = lever(bars[u], 3, 0.01)
     return dates, bars, vix
+
+
+def lever(b, k, drag):
+    o, h, l, c = [100.0], [100.0], [100.0], [100.0]
+    for i in range(1, len(b["c"])):
+        pc, base, d = b["c"][i - 1], c[-1], drag / 252
+        f = lambda x: base * (1 + k * (x / pc - 1) - d)
+        o.append(f(b["o"][i])); h.append(f(b["h"][i])); l.append(f(b["l"][i])); c.append(f(b["c"][i]))
+    return {"o": o, "h": h, "l": l, "c": c}
 
 
 def sma(x, n):
@@ -121,6 +133,9 @@ def regimes(dates, bars, vix, ind):
 def playbook(rg, p):
     """Allowed strategies and max exposure for a regime: the STRATEGY.md table as code."""
     t, v, b = rg["trend"], rg["vol"], rg["breadth"]
+    if p.get("pb") == "v4":  # v4 aggressive: leveraged dip-buys first, sector dip-buys fill the rest; fully invested
+        if t == "up" and v in ("low", "normal"): return ["lev-dip-buy", "range-mean-reversion", "trend-hold"], 1.0
+        return ["lev-dip-buy", "capitulation-bounce", "range-mean-reversion"], 1.0
     if p.get("pb") == "v3":  # v3: buy oversold dips in every regime (fear = opportunity); trend-hold in uptrends
         if t == "up" and v in ("low", "normal"): return ["trend-hold", "range-mean-reversion"], 1.0
         return ["capitulation-bounce", "range-mean-reversion"], 1.0
@@ -170,6 +185,16 @@ def signals(i, strat, bars, ind, p):
                 continue
             stop = c - p["trail_atr"] * xi["atr"][i]
             out.append((x, c, stop, c + 6 * (c - stop), 120, mom[x], "trail"))
+    elif strat == "lev-dip-buy":
+        for u in ("QQQ", "SPY"):
+            xu, s3 = ind[u], u + "3"
+            if xu["rsi2"][i] is None or xu["rsi2"][i] >= p["rsi_entry"]:
+                continue
+            if bars[u]["c"][i] <= xu["sma200"][i] and not p.get("_fear"):
+                continue
+            c3 = bars[s3]["c"][i]
+            stop = c3 - p["stop_atr"] * ind[s3]["atr"][i]
+            out.append((s3, c3, stop, c3 + 1.5 * (c3 - stop), 7, -xu["rsi2"][i], "sma5"))
     elif strat == "range-mean-reversion":
         for s in SECTORS + ["SPY"]:
             c, x = bars[s]["c"][i], ind[s]
@@ -254,14 +279,14 @@ def simulate(dates, bars, ind, rg, p, mode="adaptive", only=None, start="1999-01
         budget = cap * eq - invested
         avail = cash
         for strat in allowed:
-            pp = dict(p, _fear=(p.get("pb") == "v3" and rg[i]["vol"] in ("high", "extreme")))
+            pp = dict(p, _fear=(p.get("pb") in ("v3", "v4") and rg[i]["vol"] in ("high", "extreme")))
             for (s, lim, stop, tgt, hold, _, exit_rule) in signals(i, strat, bars, ind, pp):
                 if s in held or len(pos) + len(orders) >= 4:
                     continue
                 risk_pct = (lim - stop) / lim
                 if risk_pct <= 0:
                     continue
-                notional = min(size * eq, 0.25 * eq, 0.02 * eq / risk_pct, budget, avail)
+                notional = min(size * eq, 0.25 * eq, p.get("risk_cap", 0.02) * eq / risk_pct, budget, avail)
                 if notional < 0.05 * eq:
                     continue
                 orders.append((s, lim, stop, tgt, hold, strat, rg[i]["label"], notional / lim, exit_rule))

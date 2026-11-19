@@ -3,7 +3,7 @@
 import json, os, time, urllib.parse, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SYMS = ["SPY", "^VIX", "XLB", "XLE", "XLF", "XLI", "XLK", "XLP", "XLU", "XLV", "XLY"]
+SYMS = ["SPY", "QQQ", "^VIX", "XLB", "XLE", "XLF", "XLI", "XLK", "XLP", "XLU", "XLV", "XLY"]
 os.makedirs(os.path.join(HERE, "data"), exist_ok=True)
 for s in SYMS:
     u = (f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(s)}"

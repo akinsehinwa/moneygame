@@ -15,3 +15,9 @@
 2026-11-18 12:38:03 EST | FILL #7 BUY 0.0309 SPY @ 732.4400 at 2026-11-18 09:35 ET ($22.63)
 2026-11-18 12:38:03 EST | FILL #5 BUY 0.4464 XLB @ 50.3000 at 2026-11-18 09:30 ET ($22.45)
 2026-11-18 16:13:21 EST | EXPIRE #6 XLY (day order unfilled)
+2026-11-18 23:25:35 EST | EXIT-ORDER #5 XLB sell limit 50.2 (was target 54.97) | AGGRESSIVE MODE: rotate low-beta XLB dip-buy into higher-octane positions
+2026-11-18 23:25:35 EST | EXIT-ORDER #3 XLU sell limit 43.4 (was target 45.4) | AGGRESSIVE MODE: XLU defensive is dead weight for a 10x goal
+2026-11-18 23:25:35 EST | EXIT-ORDER #7 SPY sell limit 729.0 (was target 785.47) | AGGRESSIVE MODE: replace SPY dip-buy with the same signal on 3x UPRO
+2026-11-18 23:25:36 EST | PLACE #8 BUY 0.1953 UPRO LMT 125.4 | target 153.6 stop 106.6 | $24.49 (25% of equity), max risk $3.67 | [lev-dip-buy @ down/high/risk-off] 3x S&P dip-buy: SPY RSI(2) 4.4 with VIX 24 (backtested lev-dip-buy, 68% win rate 1999-2014). Entry 125.40, target +22.5% (1.5R) or first SPY close above its 5-day SMA, stop -15% (2.5 ATR)
+2026-11-18 23:25:36 EST | PLACE #9 BUY 0.1622 NVDA LMT 151.0 | target 189.0 stop 125.0 | $24.49 (25% of equity), max risk $4.22 | [event-panic-rebound @ down/high/risk-off] NVDA RSI(2) 2.2, -32% in 20 days on the CEO ouster after blowout earnings (earnings risk already past). Panic rebound toward the 20-day SMA. Entry 151, target 189 (+25%), stop 125 (-17%)
+2026-11-18 23:25:36 EST | PLACE #10 BUY 0.0626 APP LMT 391.0 | target 460.0 stop 345.0 | $24.48 (25% of equity), max risk $2.88 | [momentum-pullback @ down/high/risk-off] APP: top momentum large cap (+46% in 20 days), first pullback (RSI(2) 19.8). Entry 391, target 460 (+18%, 1.5R), stop 345 (-12%)

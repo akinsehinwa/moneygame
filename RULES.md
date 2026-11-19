@@ -1,6 +1,7 @@
 # Competition rules & simulation method
 
 ## Competition (set by the organizer)
+- **Goal updated 2026-11-19: grow $100 to $1,000 by the 2026-12-31 close (aggressive mode).**
 - Start: $100 simulated paper account on Mon 2026-11-16. Originally 5 trading days; **extended on 2026-11-17 to year end: the competition ends at the 16:00 ET close on Thu 2026-12-31** (32 trading days; market closed Thu 2026-11-26 and Fri 2026-12-25; early 13:00 ET closes Fri 2026-11-27 and Thu 2026-12-24).
 - Lowest final balance is eliminated.
 - No position may exceed 25% of the account (checked at order entry, including any resting orders in the same symbol).
@@ -10,7 +11,8 @@
 
 ## Defaults I chose (the organizer did not specify)
 - Universe: US-listed stocks and ETFs, long only, regular session (9:30-16:00 ET). No options, crypto, shorting or margin.
-  No leveraged ETFs. (Inverse ETFs were allowed on 2026-11-17 and dropped on 2026-11-18 after the backtest.)
+  **Since 2026-11-19 (aggressive mode): single stocks and leveraged ETFs up to 3x (TQQQ, UPRO, SOXL, TNA...) are allowed.**
+  Still long only: no options, shorting, margin or inverse ETFs. Single stocks are never held through their earnings date.
 - Strategy by regime: see STRATEGY.md. Every order must carry `--strategy` and `--regime` tags.
 - Fractional quantities allowed (4 decimals). Commission-free. No settlement or PDT limits are modeled.
 - Score = cash + open positions marked at the last completed 5-minute close on Thu 2026-12-31.

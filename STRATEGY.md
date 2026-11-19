@@ -12,6 +12,25 @@ with `--strategy <name> --regime <label>`, and `python3 sim/ledger.py stats` rep
 | Leadership | 20-day return, defensives (XLV XLP XLU) minus cyclicals (XLK XLY XLF XLI) | risk-on < -2pp, mixed, risk-off > +2pp |
 | Breadth | sectors above their 20-day EMA | 0-11 |
 
+## 0. MODE: AGGRESSIVE (set by the organizer on 2026-11-19: $100 → $1,000 by 2026-12-31)
+Backtest reality check (journal/backtest-2026-11-18.md, playbook v4): no 30-day window in 1999-2020 returned +100%.
+The best was about +24% for leveraged dip-buys. 10x needs concentrated single-stock momentum plus compounding winners,
+so this mode accepts much larger drawdowns. The binding guardrail is to stay alive (lowest balance is deleted).
+- **Fully invested by default:** up to 4 positions at ~25% each. Cash only when no setup qualifies.
+- **Risk per trade 3-5% of equity**, up from 1-2%. Stops stay mandatory; never widen one after entry.
+- **Setups, in priority order:**
+  1. `lev-dip-buy`: 3x ETF (UPRO/TQQQ/SOXL) when the underlying's RSI(2) < 15. Stop 2.5 ATR of the 3x fund, target 1.5R,
+     or exit on the first close of the underlying above its 5-day SMA, 7-day time stop. *Backtested.*
+  2. `event-panic-rebound`: quality large cap down >25% in 20 days on non-fundamental news, RSI(2) < 10, earnings already out.
+     Stop about 2 ATR, target the 20-day SMA. *Not backtested: judgment.*
+  3. `momentum-pullback`: liquid stock in the top momentum list (+30% in 1 month, above its 50-day SMA) on its first pullback
+     (RSI(2) < 25). Stop about 1.5 ATR, target 1.5-2R, then trail. *Not backtested: judgment.*
+  4. `post-earnings-momentum`: buy a liquid stock that gapped up >8% on earnings with >3x volume, on day 2-3 if it holds
+     the gap. Stop under the gap day's low, target 2R. *Not backtested: judgment.*
+- **Pyramiding into winners:** when a position is +1R, raise its stop to breakeven. Then a second position can be opened in a
+  correlated name (e.g. TQQQ next to a winning NVDA) rather than adding to the same symbol (25% cap).
+- **Untested setups are tagged** so the weekly review can see whether judgment trades beat backtested ones.
+
 ## 2. Playbook by regime
 
 > **Backtest update 2026-11-18 (journal/backtest-2026-11-18.md). These override the table below where they conflict.**
@@ -51,3 +70,4 @@ risk about 1-2% of equity per trade, no single stocks held through earnings, onl
 | 2026-11-17 | Leaders: set entries ~0.3% below last price, not at the prior close | XLP limit at the prior close never filled on Day 1, missing the best performer |
 | 2026-11-17 | PROVISIONAL: pause `defensive-leader-pullback` when breadth <= 3/11; cap exposure at 30% | Day 2: breadth 7/11 → 3/11; XLV and XLF both stopped (−1R each) as defensives fell with SPY. Only 2 trades, so re-test at the 11-20 review |
 | 2026-11-18 | Built 27-year backtest; adopted dip-buying in all regimes, 2.5-ATR stops; dropped inverse-index-trend; retired the 11-17 breadth rule | journal/backtest-2026-11-18.md: v1 playbook lost to v3 on train and validate; inverse trades negative out of sample; breadth threshold had no effect |
+| 2026-11-19 | AGGRESSIVE MODE: goal $1,000 by 12-31; single stocks and 3x ETFs allowed; ~25% x 4 fully invested; risk 3-5%/trade; setups lev-dip-buy, event-panic-rebound, momentum-pullback, post-earnings-momentum | Organizer's instruction. Backtest v4: about 2x the CAGR of v3 on train (12.6% vs 7.6%), deeper drawdown (-27%); best 30-day window +24%, so 10x is not expected |
