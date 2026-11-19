@@ -1,5 +1,5 @@
 {
-  "cash": 25.443218678955088,
+  "cash": 1.227041152481089,
   "closed": [
     {
       "entry": 58.4,
@@ -120,10 +120,11 @@
     }
   ],
   "marks": {
-    "APP": 391.7449951171875,
-    "NVDA": 150.49000549316406,
+    "APP": 379.0199890136719,
+    "NVDA": 145.97999572753906,
     "SPY": 726.1467895507812,
-    "UPRO": 123.19000244140625,
+    "TNA": 47.86000061035156,
+    "UPRO": 117.87000274658203,
     "XLB": 49.810001373291016,
     "XLF": 57.06999969482422,
     "XLP": 92.62999725341797,
@@ -364,7 +365,7 @@
       "reason": "4th slot: 3x small caps; IWM RSI(2) 10.7 intraday (backtested dip-buy signal). Diversifies away from the semis in NVDA. Entry 49.30, target 60.55 (1.5R) or first IWM close above its 5-day SMA, stop 41.80 (-15%, 2.5 ATR)",
       "regime": "down/high/risk-off",
       "side": "buy",
-      "status": "open",
+      "status": "filled",
       "stop": 41.8,
       "strategy": "lev-dip-buy",
       "symbol": "TNA",
@@ -378,7 +379,7 @@
       "entry_time": 1795098600,
       "id": 13,
       "orig_stop": 345.0,
-      "processed_to": 1795109700,
+      "processed_to": 1795122300,
       "qty": 0.0618,
       "reason": "Reprice to pre-market 396.37: momentum leader's first pullback. Target 460, stop 345",
       "regime": "down/high/risk-off",
@@ -392,7 +393,7 @@
       "entry_time": 1795098600,
       "id": 12,
       "orig_stop": 125.0,
-      "processed_to": 1795109700,
+      "processed_to": 1795122300,
       "qty": 0.1604,
       "reason": "Reprice to pre-market 152.63: panic rebound after the CEO ouster (earnings already out). Target 189 (20-day SMA), stop 125",
       "regime": "down/high/risk-off",
@@ -406,7 +407,7 @@
       "entry_time": 1795101000,
       "id": 11,
       "orig_stop": 106.6,
-      "processed_to": 1795109700,
+      "processed_to": 1795122300,
       "qty": 0.1915,
       "reason": "Reprice: SPY dip-buy signal (RSI(2) 4.4) with pre-market +1%; chase to the 2% limit cap (UPRO pre-mkt 129.1). Target 153.60 or first SPY close above its 5-day SMA, stop 106.60",
       "regime": "down/high/risk-off",
@@ -414,6 +415,20 @@
       "strategy": "lev-dip-buy",
       "symbol": "UPRO",
       "target": 153.6
+    },
+    {
+      "entry": 49.130001068115234,
+      "entry_time": 1795110000,
+      "id": 14,
+      "orig_stop": 41.8,
+      "processed_to": 1795122000,
+      "qty": 0.4929,
+      "reason": "4th slot: 3x small caps; IWM RSI(2) 10.7 intraday (backtested dip-buy signal). Diversifies away from the semis in NVDA. Entry 49.30, target 60.55 (1.5R) or first IWM close above its 5-day SMA, stop 41.80 (-15%, 2.5 ATR)",
+      "regime": "down/high/risk-off",
+      "stop": 41.8,
+      "strategy": "lev-dip-buy",
+      "symbol": "TNA",
+      "target": 60.55
     }
   ],
   "start_cash": 100.0
