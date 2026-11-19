@@ -1,5 +1,5 @@
 {
-  "cash": 30.992034340576176,
+  "cash": 25.443218678955088,
   "closed": [
     {
       "entry": 58.4,
@@ -36,18 +36,102 @@
       "strategy": "defensive-leader-pullback",
       "symbol": "XLV",
       "target": 194.5
+    },
+    {
+      "changes": [
+        {
+          "kind": "exit",
+          "prev_stop": 697.09,
+          "prev_target": 785.47,
+          "ts": 1795062335
+        }
+      ],
+      "entry": 732.44,
+      "entry_time": 1795012500,
+      "exit": 737.4600219726562,
+      "exit_reason": "exit order",
+      "exit_time": 1795098600,
+      "exiting": true,
+      "id": 7,
+      "orig_stop": 697.09,
+      "pnl": 0.1551,
+      "processed_to": 1795035900,
+      "qty": 0.0309,
+      "reason": "Dip-buy: SPY RSI(2) 5.5, sitting on its 200d SMA after -2.9% in 2 days; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (748.74), 7-day time stop",
+      "regime": "down/high/risk-off",
+      "stop": 697.09,
+      "strategy": "range-mean-reversion",
+      "symbol": "SPY",
+      "target": 729.0
+    },
+    {
+      "changes": [
+        {
+          "kind": "exit",
+          "prev_stop": 48.09,
+          "prev_target": 54.97,
+          "ts": 1795062335
+        }
+      ],
+      "entry": 50.29999923706055,
+      "entry_time": 1795012200,
+      "exit": 50.29999923706055,
+      "exit_reason": "exit order",
+      "exit_time": 1795098600,
+      "exiting": true,
+      "id": 5,
+      "orig_stop": 48.09,
+      "pnl": 0.0,
+      "processed_to": 1795035900,
+      "qty": 0.4464,
+      "reason": "Dip-buy: RSI(2) 2.5 (most oversold sector), VIX 24 so below-200d allowed; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (51.98), 7-day time stop",
+      "regime": "down/high/risk-off",
+      "stop": 48.09,
+      "strategy": "range-mean-reversion",
+      "symbol": "XLB",
+      "target": 50.2
+    },
+    {
+      "changes": [
+        {
+          "kind": "exit",
+          "prev_stop": 43.1,
+          "prev_target": 45.4,
+          "ts": 1795062335
+        }
+      ],
+      "entry": 44.0,
+      "entry_time": 1794847200,
+      "exit": 43.4,
+      "exit_reason": "exit order",
+      "exit_time": 1795098600,
+      "exiting": true,
+      "id": 3,
+      "orig_stop": 43.1,
+      "pnl": -0.3136,
+      "processed_to": 1795035900,
+      "qty": 0.5227,
+      "reason": "Utilities at 20-day high with defensive rotation; buy at Friday's close, stop under 5-day low, target +3%",
+      "regime": "down/normal/risk-off",
+      "stop": 43.1,
+      "strategy": "defensive-leader-pullback",
+      "symbol": "XLU",
+      "target": 43.4
     }
   ],
   "marks": {
-    "SPY": 730.25,
-    "XLB": 50.459999084472656,
+    "APP": 391.7449951171875,
+    "NVDA": 150.49000549316406,
+    "SPY": 726.1467895507812,
+    "UPRO": 123.19000244140625,
+    "XLB": 49.810001373291016,
     "XLF": 57.06999969482422,
     "XLP": 92.62999725341797,
-    "XLU": 43.540000915527344,
+    "XLU": 43.04499816894531,
     "XLV": 185.24000549316406,
     "XLY": 119.19999694824219
   },
-  "next_id": 14,
+  "next_id": 15,
   "orders": [
     {
       "expires_at": 1794862800,
@@ -229,7 +313,7 @@
       "reason": "Reprice: SPY dip-buy signal (RSI(2) 4.4) with pre-market +1%; chase to the 2% limit cap (UPRO pre-mkt 129.1). Target 153.60 or first SPY close above its 5-day SMA, stop 106.60",
       "regime": "down/high/risk-off",
       "side": "buy",
-      "status": "open",
+      "status": "filled",
       "stop": 106.6,
       "strategy": "lev-dip-buy",
       "symbol": "UPRO",
@@ -246,7 +330,7 @@
       "reason": "Reprice to pre-market 152.63: panic rebound after the CEO ouster (earnings already out). Target 189 (20-day SMA), stop 125",
       "regime": "down/high/risk-off",
       "side": "buy",
-      "status": "open",
+      "status": "filled",
       "stop": 125.0,
       "strategy": "event-panic-rebound",
       "symbol": "NVDA",
@@ -263,83 +347,73 @@
       "reason": "Reprice to pre-market 396.37: momentum leader's first pullback. Target 460, stop 345",
       "regime": "down/high/risk-off",
       "side": "buy",
-      "status": "open",
+      "status": "filled",
       "stop": 345.0,
       "strategy": "momentum-pullback",
       "symbol": "APP",
       "target": 460.0,
       "tif": "day"
+    },
+    {
+      "expires_at": 1795122000,
+      "id": 14,
+      "limit": 49.3,
+      "orig_stop": 41.8,
+      "placed_at": 1795109878,
+      "qty": 0.4929,
+      "reason": "4th slot: 3x small caps; IWM RSI(2) 10.7 intraday (backtested dip-buy signal). Diversifies away from the semis in NVDA. Entry 49.30, target 60.55 (1.5R) or first IWM close above its 5-day SMA, stop 41.80 (-15%, 2.5 ATR)",
+      "regime": "down/high/risk-off",
+      "side": "buy",
+      "status": "open",
+      "stop": 41.8,
+      "strategy": "lev-dip-buy",
+      "symbol": "TNA",
+      "target": 60.55,
+      "tif": "day"
     }
   ],
   "positions": [
     {
-      "changes": [
-        {
-          "kind": "exit",
-          "prev_stop": 43.1,
-          "prev_target": 45.4,
-          "ts": 1795062335
-        }
-      ],
-      "entry": 44.0,
-      "entry_time": 1794847200,
-      "exiting": true,
-      "id": 3,
-      "orig_stop": 43.1,
-      "processed_to": 1795035900,
-      "qty": 0.5227,
-      "reason": "Utilities at 20-day high with defensive rotation; buy at Friday's close, stop under 5-day low, target +3%",
-      "regime": "down/normal/risk-off",
-      "stop": 43.1,
-      "strategy": "defensive-leader-pullback",
-      "symbol": "XLU",
-      "target": 43.4
+      "entry": 396.4,
+      "entry_time": 1795098600,
+      "id": 13,
+      "orig_stop": 345.0,
+      "processed_to": 1795109700,
+      "qty": 0.0618,
+      "reason": "Reprice to pre-market 396.37: momentum leader's first pullback. Target 460, stop 345",
+      "regime": "down/high/risk-off",
+      "stop": 345.0,
+      "strategy": "momentum-pullback",
+      "symbol": "APP",
+      "target": 460.0
     },
     {
-      "changes": [
-        {
-          "kind": "exit",
-          "prev_stop": 697.09,
-          "prev_target": 785.47,
-          "ts": 1795062335
-        }
-      ],
-      "entry": 732.44,
-      "entry_time": 1795012500,
-      "exiting": true,
-      "id": 7,
-      "orig_stop": 697.09,
-      "processed_to": 1795035900,
-      "qty": 0.0309,
-      "reason": "Dip-buy: SPY RSI(2) 5.5, sitting on its 200d SMA after -2.9% in 2 days; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (748.74), 7-day time stop",
+      "entry": 152.65,
+      "entry_time": 1795098600,
+      "id": 12,
+      "orig_stop": 125.0,
+      "processed_to": 1795109700,
+      "qty": 0.1604,
+      "reason": "Reprice to pre-market 152.63: panic rebound after the CEO ouster (earnings already out). Target 189 (20-day SMA), stop 125",
       "regime": "down/high/risk-off",
-      "stop": 697.09,
-      "strategy": "range-mean-reversion",
-      "symbol": "SPY",
-      "target": 729.0
+      "stop": 125.0,
+      "strategy": "event-panic-rebound",
+      "symbol": "NVDA",
+      "target": 189.0
     },
     {
-      "changes": [
-        {
-          "kind": "exit",
-          "prev_stop": 48.09,
-          "prev_target": 54.97,
-          "ts": 1795062335
-        }
-      ],
-      "entry": 50.29999923706055,
-      "entry_time": 1795012200,
-      "exiting": true,
-      "id": 5,
-      "orig_stop": 48.09,
-      "processed_to": 1795035900,
-      "qty": 0.4464,
-      "reason": "Dip-buy: RSI(2) 2.5 (most oversold sector), VIX 24 so below-200d allowed; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (51.98), 7-day time stop",
+      "entry": 127.9,
+      "entry_time": 1795101000,
+      "id": 11,
+      "orig_stop": 106.6,
+      "processed_to": 1795109700,
+      "qty": 0.1915,
+      "reason": "Reprice: SPY dip-buy signal (RSI(2) 4.4) with pre-market +1%; chase to the 2% limit cap (UPRO pre-mkt 129.1). Target 153.60 or first SPY close above its 5-day SMA, stop 106.60",
       "regime": "down/high/risk-off",
-      "stop": 48.09,
-      "strategy": "range-mean-reversion",
-      "symbol": "XLB",
-      "target": 50.2
+      "stop": 106.6,
+      "strategy": "lev-dip-buy",
+      "symbol": "UPRO",
+      "target": 153.6
     }
   ],
   "start_cash": 100.0

@@ -29,3 +29,10 @@
 2026-11-19 08:49:16 EST | PLACE #11 BUY 0.1915 UPRO LMT 127.9 | target 153.6 stop 106.6 | $24.49 (25% of equity), max risk $4.08 | [lev-dip-buy @ down/high/risk-off] Reprice: SPY dip-buy signal (RSI(2) 4.4) with pre-market +1%; chase to the 2% limit cap (UPRO pre-mkt 129.1). Target 153.60 or first SPY close above its 5-day SMA, stop 106.60
 2026-11-19 08:49:16 EST | PLACE #12 BUY 0.1604 NVDA LMT 152.65 | target 189.0 stop 125.0 | $24.49 (25% of equity), max risk $4.44 | [event-panic-rebound @ down/high/risk-off] Reprice to pre-market 152.63: panic rebound after the CEO ouster (earnings already out). Target 189 (20-day SMA), stop 125
 2026-11-19 08:49:16 EST | PLACE #13 BUY 0.0618 APP LMT 396.4 | target 460.0 stop 345.0 | $24.50 (25% of equity), max risk $3.18 | [momentum-pullback @ down/high/risk-off] Reprice to pre-market 396.37: momentum leader's first pullback. Target 460, stop 345
+2026-11-19 12:37:39 EST | EXIT #7 SELL 0.0309 SPY @ 737.4600 (exit order) at 2026-11-19 09:30 ET | P&L $+0.16
+2026-11-19 12:37:39 EST | EXIT #5 SELL 0.4464 XLB @ 50.3000 (exit order) at 2026-11-19 09:30 ET | P&L $+0.00
+2026-11-19 12:37:39 EST | EXIT #3 SELL 0.5227 XLU @ 43.4000 (exit order) at 2026-11-19 09:30 ET | P&L $-0.31
+2026-11-19 12:37:39 EST | FILL #13 BUY 0.0618 APP @ 396.4000 at 2026-11-19 09:30 ET ($24.50)
+2026-11-19 12:37:39 EST | FILL #12 BUY 0.1604 NVDA @ 152.6500 at 2026-11-19 09:30 ET ($24.49)
+2026-11-19 12:37:39 EST | FILL #11 BUY 0.1915 UPRO @ 127.9000 at 2026-11-19 10:10 ET ($24.49)
+2026-11-19 12:37:58 EST | PLACE #14 BUY 0.4929 TNA LMT 49.3 | target 60.55 stop 41.8 | $24.30 (25% of equity), max risk $3.70 | [lev-dip-buy @ down/high/risk-off] 4th slot: 3x small caps; IWM RSI(2) 10.7 intraday (backtested dip-buy signal). Diversifies away from the semis in NVDA. Entry 49.30, target 60.55 (1.5R) or first IWM close above its 5-day SMA, stop 41.80 (-15%, 2.5 ATR)
