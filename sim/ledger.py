@@ -150,12 +150,31 @@ def cmd_modify(a):
     for p in s["positions"] + [o for o in s["orders"] if o["status"] == "open"]:
         if p["id"] == a.id:
             old = (p["stop"], p["target"])
+            if "entry" in p:  # positions keep a change history; resting orders don't need one
+                record_change(p, "modify")
             if a.stop is not None: p["stop"] = a.stop
             if a.target is not None: p["target"] = a.target
             save(s)
             log(f"MODIFY #{a.id} {p['symbol']} stop {old[0]}->{p['stop']} target {old[1]}->{p['target']} | {a.reason}")
             return
     sys.exit("No open order/position with that id.")
+
+
+def levels(p, t):
+    """Stop/target in force at bar time t. Changes made by modify/exit only apply to bars starting at or
+    after the change, even if older bars arrive late from the data feed (prevents look-ahead fills)."""
+    st, tg, exiting = p["stop"], p["target"], p.get("exiting", False)
+    for ch in sorted(p.get("changes", []), key=lambda c: c["ts"], reverse=True):
+        if t < ch["ts"]:
+            st, tg = ch["prev_stop"], ch["prev_target"]
+            if ch.get("kind") == "exit":
+                exiting = False
+    return st, tg, exiting
+
+
+def record_change(p, kind):
+    p.setdefault("changes", []).append({"ts": int(time.time()), "kind": kind,
+                                        "prev_stop": p["stop"], "prev_target": p["target"]})
 
 
 def close_position(s, p, price, ts, why):
@@ -192,11 +211,11 @@ def cmd_update(a=None):
         for p in [p for p in s["positions"] if p["symbol"] == sym]:
             if t < p["processed_to"]:
                 continue
-            if b["l"] <= p["stop"]:
-                close_position(s, p, min(p["stop"], b["o"]), t, "stop"); continue
-            if b["h"] >= p["target"]:
-                close_position(s, p, max(p["target"], b["o"]), t, "exit order" if p.get("exiting") else "target")
-                continue
+            st, tg, exiting = levels(p, t)
+            if b["l"] <= st:
+                close_position(s, p, min(st, b["o"]), t, "stop"); continue
+            if b["h"] >= tg:
+                close_position(s, p, max(tg, b["o"]), t, "exit order" if exiting else "target"); continue
             p["processed_to"] = t + BAR
     # entries are replayed in a second pass in time order, so every exit up to time t has already
     # credited cash when an entry at time t is considered (exits never depend on entries in other symbols)
@@ -225,10 +244,11 @@ def cmd_update(a=None):
         for p in [p for p in s["positions"] if p["symbol"] == sym]:
             if t < p["processed_to"]:
                 continue
-            if b["l"] <= p["stop"]:
-                close_position(s, p, min(p["stop"], b["o"]), t, "stop"); continue
-            if b["h"] >= p["target"]:
-                close_position(s, p, max(p["target"], b["o"]), t, "target"); continue
+            st, tg, exiting = levels(p, t)
+            if b["l"] <= st:
+                close_position(s, p, min(st, b["o"]), t, "stop"); continue
+            if b["h"] >= tg:
+                close_position(s, p, max(tg, b["o"]), t, "exit order" if exiting else "target"); continue
             p["processed_to"] = t + BAR
     for o in s["orders"]:  # expire day orders whose session ended with no further bars
         if o["status"] == "open" and o["expires_at"] and now >= o["expires_at"] + 600:
@@ -249,7 +269,8 @@ def cmd_exit(a):
     s = load()
     for p in s["positions"]:
         if p["id"] == a.id:
-            old = p["target"]; p["target"] = a.limit; p["exiting"] = True; save(s)
+            old = p["target"]; record_change(p, "exit")
+            p["target"] = a.limit; p["exiting"] = True; save(s)
             log(f"EXIT-ORDER #{a.id} {p['symbol']} sell limit {a.limit} (was target {old}) | {a.reason}")
             return
     sys.exit("No position with that id.")

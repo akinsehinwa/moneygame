@@ -1,5 +1,5 @@
 {
-  "cash": 30.992034340576172,
+  "cash": 30.992034340576176,
   "closed": [
     {
       "entry": 58.4,
@@ -40,14 +40,14 @@
   ],
   "marks": {
     "SPY": 730.25,
-    "XLB": 50.689998626708984,
+    "XLB": 50.459999084472656,
     "XLF": 57.06999969482422,
     "XLP": 92.62999725341797,
     "XLU": 43.540000915527344,
     "XLV": 185.24000549316406,
     "XLY": 119.19999694824219
   },
-  "next_id": 11,
+  "next_id": 14,
   "orders": [
     {
       "expires_at": 1794862800,
@@ -178,7 +178,7 @@
       "reason": "3x S&P dip-buy: SPY RSI(2) 4.4 with VIX 24 (backtested lev-dip-buy, 68% win rate 1999-2014). Entry 125.40, target +22.5% (1.5R) or first SPY close above its 5-day SMA, stop -15% (2.5 ATR)",
       "regime": "down/high/risk-off",
       "side": "buy",
-      "status": "open",
+      "status": "cancelled",
       "stop": 106.6,
       "strategy": "lev-dip-buy",
       "symbol": "UPRO",
@@ -195,7 +195,7 @@
       "reason": "NVDA RSI(2) 2.2, -32% in 20 days on the CEO ouster after blowout earnings (earnings risk already past). Panic rebound toward the 20-day SMA. Entry 151, target 189 (+25%), stop 125 (-17%)",
       "regime": "down/high/risk-off",
       "side": "buy",
-      "status": "open",
+      "status": "cancelled",
       "stop": 125.0,
       "strategy": "event-panic-rebound",
       "symbol": "NVDA",
@@ -212,6 +212,57 @@
       "reason": "APP: top momentum large cap (+46% in 20 days), first pullback (RSI(2) 19.8). Entry 391, target 460 (+18%, 1.5R), stop 345 (-12%)",
       "regime": "down/high/risk-off",
       "side": "buy",
+      "status": "cancelled",
+      "stop": 345.0,
+      "strategy": "momentum-pullback",
+      "symbol": "APP",
+      "target": 460.0,
+      "tif": "day"
+    },
+    {
+      "expires_at": 1795122000,
+      "id": 11,
+      "limit": 127.9,
+      "orig_stop": 106.6,
+      "placed_at": 1795096156,
+      "qty": 0.1915,
+      "reason": "Reprice: SPY dip-buy signal (RSI(2) 4.4) with pre-market +1%; chase to the 2% limit cap (UPRO pre-mkt 129.1). Target 153.60 or first SPY close above its 5-day SMA, stop 106.60",
+      "regime": "down/high/risk-off",
+      "side": "buy",
+      "status": "open",
+      "stop": 106.6,
+      "strategy": "lev-dip-buy",
+      "symbol": "UPRO",
+      "target": 153.6,
+      "tif": "day"
+    },
+    {
+      "expires_at": 1795122000,
+      "id": 12,
+      "limit": 152.65,
+      "orig_stop": 125.0,
+      "placed_at": 1795096156,
+      "qty": 0.1604,
+      "reason": "Reprice to pre-market 152.63: panic rebound after the CEO ouster (earnings already out). Target 189 (20-day SMA), stop 125",
+      "regime": "down/high/risk-off",
+      "side": "buy",
+      "status": "open",
+      "stop": 125.0,
+      "strategy": "event-panic-rebound",
+      "symbol": "NVDA",
+      "target": 189.0,
+      "tif": "day"
+    },
+    {
+      "expires_at": 1795122000,
+      "id": 13,
+      "limit": 396.4,
+      "orig_stop": 345.0,
+      "placed_at": 1795096156,
+      "qty": 0.0618,
+      "reason": "Reprice to pre-market 396.37: momentum leader's first pullback. Target 460, stop 345",
+      "regime": "down/high/risk-off",
+      "side": "buy",
       "status": "open",
       "stop": 345.0,
       "strategy": "momentum-pullback",
@@ -222,6 +273,14 @@
   ],
   "positions": [
     {
+      "changes": [
+        {
+          "kind": "exit",
+          "prev_stop": 43.1,
+          "prev_target": 45.4,
+          "ts": 1795062335
+        }
+      ],
       "entry": 44.0,
       "entry_time": 1794847200,
       "exiting": true,
@@ -237,6 +296,14 @@
       "target": 43.4
     },
     {
+      "changes": [
+        {
+          "kind": "exit",
+          "prev_stop": 697.09,
+          "prev_target": 785.47,
+          "ts": 1795062335
+        }
+      ],
       "entry": 732.44,
       "entry_time": 1795012500,
       "exiting": true,
@@ -252,12 +319,20 @@
       "target": 729.0
     },
     {
+      "changes": [
+        {
+          "kind": "exit",
+          "prev_stop": 48.09,
+          "prev_target": 54.97,
+          "ts": 1795062335
+        }
+      ],
       "entry": 50.29999923706055,
       "entry_time": 1795012200,
       "exiting": true,
       "id": 5,
       "orig_stop": 48.09,
-      "processed_to": 1795023300,
+      "processed_to": 1795035900,
       "qty": 0.4464,
       "reason": "Dip-buy: RSI(2) 2.5 (most oversold sector), VIX 24 so below-200d allowed; buy at yesterday's close, stop 2.5 ATR, target 1.5R or first close above 5-day SMA (51.98), 7-day time stop",
       "regime": "down/high/risk-off",
