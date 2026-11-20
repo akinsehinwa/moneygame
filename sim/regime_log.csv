@@ -2,4 +2,4 @@ date,label,trend,volatility,leadership,breadth,spy,sma20,sma50,sma200,sma20_slop
 2026-11-17,down/high/risk-off,down,high,risk-off,3/11,732.44,755.86,763.15,732.34,-0.63,25.46,5.99,XLP XLU XLV
 2026-11-18,down/high/risk-off,down,high,risk-off,3/11,730.25,753.72,762.51,732.55,-0.85,24.49,6.32,XLP XLRE XLU
 2026-11-19,down/high/risk-off,down,high,risk-off,0/11,715.83,751.31,761.67,732.69,-1.07,28.56,3.44,XLRE XLY XLU
-2026-11-20,down/extreme/risk-off,down,extreme,risk-off,0/11,715.87,751.32,761.67,732.69,-1.07,31.23,3.41,XLRE XLY XLU
+2026-11-20,down/extreme/risk-off,down,extreme,risk-off,1/11,690.43,747.84,760.19,732.76,-1.47,39.74,7.21,XLP XLU XLRE
