@@ -171,3 +171,12 @@ Check-ins at Thursday 08:00 SGT (72h) and Sunday 08:00 SGT (144h). Variants (6):
   held up to Thursday 08:00 (day 10) with their stop and TP; everything else exits Monday.
 - V5 = V4 for any coin in profit (NOT allowed for non-majors by the firm; reference only, to see if holding longer pays).
 Measure avg R per position, weekly Sharpe, both periods. Adopt a rule only if it beats V0 in both periods.
+| 2026-11-21 | Trade management (results/2026-11-21-trade-management-variants.md) | 6 | Cut losers at -0.5R (V1), breakeven at +1R (V2), both (V3): no meaningful change (+/-0.003R). Majors in profit to day 10 (V4): 50K better (0.041 / 0.069 vs 0.031 / 0.044R), 100K worse in the last 12m (0.022 vs 0.038R). Any coin to day 10 (V5): worse in both | Hold 7 days, no early exits, fresh list every Monday. V4 not adopted (fails "better in both"). Thursday / Sunday check-ins are for sanity only (fills, unfilled orders cancelled Thursday, stops in place, limits) |
+
+### Pre-registered 2026-11-21: limit-order fills and cancel timing (studies/fills.py)
+The backtest entered at Monday's open; live tickets are limit orders placed ~08:30 SGT. Model: limit at Monday's open
+price moved 0.5% in the trade's favour (long 0.5% below, short 0.5% above: price has drifted by placement time).
+Fill when price trades through the limit. Stop / TP at the same % distances from the fill; exit at Monday 08:00 SGT
+regardless of fill time. Compare cancel rules: cancel if not filled within 4h, 24h (Tue 08:00), 72h (Thu 08:00), or
+never (until Monday). Measure: fill rate, avg R of filled trades, and R per ticket issued (unfilled = 0), both
+periods, both accounts. Also avg R by fill delay. Pick the rule with the best R per ticket in both periods.
