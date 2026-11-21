@@ -16,8 +16,8 @@ Stages: Idea → Backtest → Robust → Shadow → Candidate (see README). Resu
 | BRK+breadth | BRK when >= 3 coins break out together | **Rejected** | | | dropped longs still positive in the old period; breadth hurts shorts |
 | RS | weekly relative strength vs BTC, top/bottom 10 | **Rejected** | long +0.03 / short +0.02 | long −0.03 / short +0.04 | short leg positive but t < 1 |
 | FUND | fade funding-rate extremes | **Rejected** | short +0.04 (t 1.8) | short −0.03 | edge faded; extremes now rare |
-| MOM | basket: cross-sectional momentum, 60d skip 7d, top/bottom 7 (paper 3.1) | **Shadow next** | Sharpe 0.71 | Sharpe 1.12 | robust for 30-60d formation, skip 0-7d; gains lean on big winners |
-| SECTOR | basket: crypto-sector momentum rotation (paper 4.1) | **Shadow next** | Sharpe 0.83 | Sharpe 1.32 | robust at 5/6 lookbacks; hand-made sector map |
+| MOM | basket: cross-sectional momentum, 60d skip 7d, top/bottom 7 (paper 3.1) | **Shadow (from 2026-11-23)** | Sharpe 0.71 | Sharpe 1.12 | robust for 30-60d formation, skip 0-7d; gains lean on big winners |
+| SECTOR | basket: crypto-sector momentum rotation (paper 4.1) | **Shadow (from 2026-11-23)** | Sharpe 0.83 | Sharpe 1.32 | robust at 5/6 lookbacks; hand-made sector map |
 | MOMCARRY | basket: 50/50 momentum + funding carry (paper 8.4) | Probation | Sharpe 1.42 | Sharpe 0.74 | carry leg alone failed the last 12m |
 | TRENDLO | long-only trend book (paper 4.6) | **Rejected** | Sharpe 0.74 | Sharpe 1.56 | last 12m = one coin (PIPPIN) |
 | CARRY | basket: funding carry (paper 5.11/8.2/9.1) | Rejected | Sharpe 1.36 | Sharpe −0.10 | strong before, gone in the last 12m |
@@ -25,7 +25,7 @@ Stages: Idea → Backtest → Robust → Shadow → Candidate (see README). Resu
 | ROUTER | the pool switched by coin regime | **Robust? (no)** | | | walk-forward +0.064R, 6/8 quarters, t 0.3: not significant yet |
 
 ## Next ideas queued
-0. Batch-1 of the paper: MOM and SECTOR go to shadow testing (paper-traded forward, weekly rebalance).
+0. MOM and SECTOR are in the shadow book (shadow.py, shadow/STATUS.md) from the 2026-11-23 rebalance. Judge after ~3 months / 12 rebalances: forward Sharpe should not be far below the backtest's.
 1. Queue round 1 (BTC direction, breadth, relative strength, funding) done: all rejected. Next: the applicable
    strategies from "151 Trading Strategies", and breadth scaled to 72 coins (flagged as data-suggested).
 2. Put the coin-regime router into a shadow paper book once one cell is clearly significant.

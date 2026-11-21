@@ -19,6 +19,7 @@ Nothing here depends on any other project: the folder can be copied out as its o
 | `lib/` | data, indicators, regimes, trade simulation |
 | `ADAPTATION.md` | every chapter of "151 Trading Strategies" mapped to a crypto-perp version |
 | `lib/portfolio.py` | daily basket backtester (costs + funding) for momentum / carry / rotation books |
+| `shadow.py` | forward paper test of passed strategies: freezes weekly weights, marks PnL → `shadow/STATUS.md` |
 | `STRATEGIES.md` | status board: every strategy and where it is in the pipeline |
 | `LEDGER.md` | every hypothesis tested, the result and the decision (including the failures) |
 | `results/` | dated reports (committed) |
@@ -32,6 +33,7 @@ python3 fetch.py                      # ~3 min first time, incremental after
 python3 backtest.py                   # every strategy x 72 coins, ~5 s
 python3 evaluate.py --title "baseline pool"
 python3 backtest.py --only XYZ && python3 evaluate.py --only XYZ --title "XYZ v1"   # one new idea
+python3 shadow.py update              # weekly (Mondays): freeze the new rebalance, mark the shadow book
 ```
 
 ## The pipeline (every idea goes through it, in order)

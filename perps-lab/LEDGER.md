@@ -54,3 +54,8 @@ With 20 tests, about 1 could pass by luck at this bar: a pass is a candidate for
 
 Caveat for every basket result: the universe is today's 72 listed coins, so it has survivorship bias (coins that
 were delisted after crashing are missing). That flatters long legs and hurts short legs.
+
+### 2026-11-21: shadow book started (shadow.py)
+MOM (60d / skip 7 / 7 per side, weekly) and SECTOR (30d, weekly) paper-traded forward from the rebalance closing
+2026-11-23 00:00 UTC. Weights frozen on record, never regenerated. Promotion review after ~12 rebalances: forward
+Sharpe >= 0.5 and no drawdown beyond the backtest's worst (MOM −25%, SECTOR −24%) → Candidate; otherwise back to the ledger.
