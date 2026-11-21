@@ -68,7 +68,7 @@ Failures stay in `LEDGER.md` (the graveyard), so the same idea isn't re-tested b
 The user trades on Singapore time (SGT, UTC+8). The crypto daily candle opens at **08:00 SGT** (00:00 UTC); 4H
 candles open at 00:00 / 04:00 / 08:00 / 12:00 / 16:00 / 20:00 SGT. Code works in UTC internally; every alert or
 schedule shown to the user is in SGT and lands at a 4H candle open, based on the previous candle's close.
-Weekly books rebalance at **Monday 08:00 SGT**.
+Weekly books rebalance at **Monday 08:00 SGT**; tickets are generated at 08:07 SGT (scheduled) and placed as limit orders around 08:30 SGT. The Binance archive lags 1-2 days, so the newest candle used is usually Friday or Saturday (a 2-day-old signal tested fine).
 
 ## Regimes (lib/regime.py)
 
