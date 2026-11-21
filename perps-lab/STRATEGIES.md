@@ -1,5 +1,9 @@
 # Strategy status board
 
+> 2026-11-21: the user is not trading these. Conclusion: none of the strategies below are prop-challenge strategies
+> (too little edge per month to pass +8% fast). Weekly operations are paused; paper books and forward tests are
+> replayed in one batch on 2026-12-23. New prop bar: >= +0.2R/trade with >= 20 trades/month per account (LEDGER.md).
+
 Stages: Idea → Backtest → Robust → Shadow → Candidate (see README). Results: avg R per trade after costs.
 "Old" = 2023-11-20 to 2025-11-20, "12m" = the last 12 months. Latest report: `results/2026-11-21-baseline-pool.md`.
 

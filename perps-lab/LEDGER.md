@@ -224,3 +224,12 @@ free 5th slot only if the forward avg R is positive with ~15+ trades AND the nex
    next-day mean has the same sign in both periods with |t| >= 2 over the whole sample (6 patterns tested, so ~0.3
    could pass by chance at this bar).
 | 2026-11-21 | Batch 3 (results/2026-11-21-research-batch-3.md) | 2 books + 6 patterns | OIFADE: Sharpe -1.33 old / -0.97 12m (fails; the reverse looks like momentum: OI piling into trending coins). OIFADE + CROWDFADE: -0.43 / 0.77 (fails). BTC OUTSIDE day: alt basket next day +1.15% (t 2.21; old +1.31, 12m +0.74; 49 days) = candidate; the other 5 CRT patterns not significant | OUTSIDE: paper forward test. OIFOLLOW (reverse of OIFADE, data-suggested): paper forward test. Both frozen in studies/batch3_forward.py, reported with the 2026-12-23 report |
+
+### 2026-11-21: conclusion on prop suitability + operations paused
+User decision: not trading these books. Agreed conclusion: the weekly books are NOT prop-challenge strategies. They
+earn +0.03 to +0.09R per position with ~16 positions a month, i.e. about 0.5-1.5R a month; passing +8% in about a
+month at 1% risk needs about 8R a month (e.g. 20 trades at +0.4R or 40 at +0.2R), roughly 5-10x more edge or volume.
+Weekly ticket, check-in and shadow tasks paused; all paper books and forward tests are replayed in one batch on
+2026-12-23 (rules are frozen and signals are deterministic, so a batch replay equals running weekly).
+New bar for prop strategies: >= +0.2R per trade after costs with >= 20 trades a month per account, positive in both
+periods, and a challenge simulation passing stage 1 within ~45 days in most starts.
