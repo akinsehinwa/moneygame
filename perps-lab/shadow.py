@@ -22,7 +22,8 @@ from lib import portfolio as pf
 from lib.data import download_all, download_funding, download_metrics
 
 START = "2026-11-22"            # first rebalance bar (Sunday 2026-11-22, closes Monday 2026-11-23 08:00 SGT = 00:00 UTC)
-SHADOW = ["MOM", "SECTOR", "CROWDFADE"]   # strategies in the shadow book (see STRATEGIES.md)
+SHADOW = ["MOM", "SECTOR", "CROWDFADE"]   # basket books (see STRATEGIES.md)
+SHADOW_PROP = ["COMBO4"]                   # prop-ready books: 2 long + 2 short, stop 3 ATR, target 3R (studies/prop.py)
 DIR = os.path.join(config.LAB, "shadow")
 BOOK = os.path.join(DIR, "book.json")
 DAY = 24 * 3600_000
@@ -69,6 +70,68 @@ def freeze(book, P):
                        "late": (now - closes_at.to_pydatetime()).total_seconds() > 36 * 3600}
             new += 1
     return new
+
+
+def freeze_prop(book, P):
+    """Freeze the weekly picks of the prop-ready books (coin, side, daily ATR at the signal)."""
+    sys.argv = [sys.argv[0], "--list"]
+    sys.path.insert(0, os.path.join(config.LAB, "studies"))
+    import prop
+    start_ms = int(pd.Timestamp(START, tz="UTC").timestamp() * 1000)
+    now = dt.datetime.now(dt.timezone.utc)
+    new = 0
+    for name in SHADOW_PROP:
+        score, k = prop.BOOKS[name]
+        rb = book.setdefault("prop", {}).setdefault(name, {})
+        days = P["C"].index[pf.rebalance_days(P["C"].index, "W") & (P["C"].index >= start_ms)]
+        for d in days:
+            key = pd.Timestamp(int(d), unit="ms").strftime("%Y-%m-%d")
+            if key in rb or P["C"].loc[d].notna().sum() < 50:
+                continue
+            sc = score.loc[d].where(prop.el.loc[d]).dropna().sort_values()
+            if len(sc) < 20:
+                continue
+            picks = [(c, 1) for c in sc.index[-k:]] + [(c, -1) for c in sc.index[:k]]
+            closes_at = pd.Timestamp(int(d) + DAY, unit="ms", tz="UTC")
+            rb[key] = {"positions": [{"coin": c, "side": sd, "atr": float(prop.ATR.at[d, c])} for c, sd in picks],
+                       "frozen_at": now.strftime("%Y-%m-%d %H:%M UTC"),
+                       "late": (now - closes_at.to_pydatetime()).total_seconds() > 36 * 3600}
+            new += 1
+    return new
+
+
+def mark_prop(book):
+    """R of every frozen prop position: closed (stop / target / time) or marked to the latest 1h close if open."""
+    from lib.data import load_1h
+    cost = config.FEE_PER_SIDE + config.SLIP_PER_SIDE
+    rows = []
+    for name, rb in book.get("prop", {}).items():
+        for key, e in sorted(rb.items()):
+            t_entry = int(pd.Timestamp(key, tz="UTC").timestamp() * 1000) + DAY
+            for p in e["positions"]:
+                df = load_1h(p["coin"])
+                x = df[df.t >= t_entry].head(168)
+                if x.empty:
+                    rows.append({"book": name, "week": key, **p, "status": "not started", "R": np.nan})
+                    continue
+                side, entry = p["side"], x.o.iloc[0]
+                risk = 3.0 * p["atr"]
+                stop, target = entry - side * risk, entry + side * 3.0 * risk
+                if side == -1:
+                    target = max(target, 0.1 * entry)       # a short's take-profit can't be at or below zero
+                status, px = "open", x.c.iloc[-1]
+                for j, r in enumerate(x.itertuples()):
+                    if (side == 1 and r.l <= stop) or (side == -1 and r.h >= stop):
+                        status, px = "stop", (min(stop, r.o) if side == 1 else max(stop, r.o)); break
+                    if (side == 1 and r.h >= target) or (side == -1 and r.l <= target):
+                        status, px = "target", (max(target, r.o) if side == 1 else min(target, r.o)); break
+                if status == "open" and len(x) == 168:
+                    status, px = "time", x.c.iloc[-1]
+                R = ((px - entry) * side - cost * (entry + px)) / risk
+                rows.append({"book": name, "week": key, "coin": p["coin"], "side": "long" if side == 1 else "short",
+                             "entry": round(entry, 6), "stop": round(stop, 6), "target": round(target, 6),
+                             "status": status, "R": round(R, 2)})
+    return pd.DataFrame(rows)
 
 
 def mark(book, P):
@@ -121,6 +184,20 @@ def write_status(book, marks):
                       "| side | coin | weight |", "|---|---|---|"]
             lines += ["| %s | %s | %+.1f%% |" % ("long" if v > 0 else "short", c, v * 100) for c, v in w[::-1].items()]
             lines += [""]
+    pm = mark_prop(book)
+    for name in SHADOW_PROP:
+        lines += ["## %s (prop-ready: 2 long + 2 short, stop 3 ATR, target 3R, weekly Mon 08:00 SGT)" % name, ""]
+        x = pm[pm.book == name] if len(pm) else pm
+        if x.empty:
+            lines += ["No week frozen yet.", ""]
+            continue
+        done = x[x.status.isin(["stop", "target", "time"])]
+        lines += ["Closed positions: %d, total %+.2fR, average %+.2fR per position (backtest: about +0.06R). "
+                  "Open: %d." % (len(done), done.R.sum(), done.R.mean() if len(done) else 0, (x.status == "open").sum()), "",
+                  "| week | coin | side | entry | stop | target | status | R |", "|---|---|---|---|---|---|---|---|"]
+        lines += ["| %s | %s | %s | %s | %s | %s | %s | %+.2f |" % (r.week, r.coin, r.side, r.entry, r.stop, r.target,
+                                                                   r.status, r.R) for r in x.itertuples()]
+        lines += [""]
     open(os.path.join(DIR, "STATUS.md"), "w").write("\n".join(lines))
     print("\n".join(lines))
 
@@ -133,7 +210,7 @@ if __name__ == "__main__":
     P = pf.build_panel(force=(cmd == "update"))
     book = load_book()
     if cmd == "update":
-        n = freeze(book, P)
+        n = freeze(book, P) + freeze_prop(book, P)
         json.dump(book, open(BOOK, "w"), indent=1, sort_keys=True)
         print("froze %d new rebalance(s)" % n)
     write_status(book, mark(book, P))

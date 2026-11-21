@@ -60,6 +60,8 @@ def trade(coin, t_entry, side, atr):
     entry = d["o"][i]
     risk = ATR_STOP * atr
     stop, target = entry - side * risk, entry + side * TARGET_R * risk
+    if side == -1:
+        target = max(target, 0.1 * entry)                   # a short's take-profit can't be at or below zero
     ts, mc, mw = [], [], []
     for j in range(i, min(i + HOLD_H + 1, len(T))):
         o, hh, ll, cc = d["o"][j], d["h"][j], d["l"][j], d["c"][j]
