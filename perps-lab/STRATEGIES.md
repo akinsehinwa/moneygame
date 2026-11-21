@@ -19,6 +19,7 @@ Stages: Idea → Backtest → Robust → Shadow → Candidate (see README). Resu
 | MOM | basket: cross-sectional momentum, 60d skip 7d, top/bottom 7 (paper 3.1) | **Shadow (from 2026-11-23)** | Sharpe 0.71 | Sharpe 1.12 | robust for 30-60d formation, skip 0-7d; gains lean on big winners |
 | SECTOR | basket: crypto-sector momentum rotation (paper 4.1) | **Shadow (from 2026-11-23)** | Sharpe 0.83 | Sharpe 1.32 | robust at 5/6 lookbacks; hand-made sector map |
 | CROWDFADE | basket: fade crowd positioning (Binance long/short account ratio) (paper 9.2, lateral) | **Shadow (from 2026-11-23)** | Sharpe 0.92 | Sharpe 1.85 | best result so far: 26/27 neighbours positive, every year positive, low correlation with MOM |
+| COMBO4 | prop version: 2 long + 2 short by combined CROWDFADE + MOM rank, stop 3 ATR, target 3R, weekly (Mon 08:00 SGT) | **Shadow (prop version) — planned** | weekly Sharpe 1.17 | weekly Sharpe 2.02 | fits the 5-position rule; slow for challenges (34% pass both by day 180 at 1.5% risk) |
 | MOMCARRY | basket: 50/50 momentum + funding carry (paper 8.4) | Probation | Sharpe 1.42 | Sharpe 0.74 | carry leg alone failed the last 12m |
 | TRENDLO | long-only trend book (paper 4.6) | **Rejected** | Sharpe 0.74 | Sharpe 1.56 | last 12m = one coin (PIPPIN) |
 | CARRY | basket: funding carry (paper 5.11/8.2/9.1) | Rejected | Sharpe 1.36 | Sharpe −0.10 | strong before, gone in the last 12m |

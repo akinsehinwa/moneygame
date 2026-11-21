@@ -21,7 +21,7 @@ import config
 from lib import portfolio as pf
 from lib.data import download_all, download_funding, download_metrics
 
-START = "2026-11-22"            # first rebalance bar (Sunday 2026-11-22, closes Monday 2026-11-23 00:00 UTC)
+START = "2026-11-22"            # first rebalance bar (Sunday 2026-11-22, closes Monday 2026-11-23 08:00 SGT = 00:00 UTC)
 SHADOW = ["MOM", "SECTOR", "CROWDFADE"]   # strategies in the shadow book (see STRATEGIES.md)
 DIR = os.path.join(config.LAB, "shadow")
 BOOK = os.path.join(DIR, "book.json")
@@ -92,7 +92,7 @@ def write_status(book, marks):
              "Paper only. Frozen weekly weights, marked to Binance daily closes with costs and funding.",
              "Started %s. Updated %s." % (START, dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")), ""]
     if not marks:
-        lines += ["No rebalance frozen yet: the first one is the bar that closes Monday 2026-11-23 00:00 UTC.", ""]
+        lines += ["No rebalance frozen yet: the first one is the bar that closes Monday 2026-11-23 08:00 SGT.", ""]
     for name in SHADOW:
         rb = book["rebalances"].get(name, {})
         x = marks.get(name)

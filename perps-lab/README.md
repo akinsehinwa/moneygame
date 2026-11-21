@@ -21,6 +21,8 @@ Nothing here depends on any other project: the folder can be copied out as its o
 | `ADAPTATION.md` | every chapter of "151 Trading Strategies" mapped to a crypto-perp version |
 | `lib/portfolio.py` | daily basket backtester (costs + funding) for momentum / carry / rotation books |
 | `shadow.py` | forward paper test of passed strategies: freezes weekly weights, marks PnL → `shadow/STATUS.md` |
+| `PROP_RULES.md` | the prop account's rules (5 positions, stops, 7-day hold, loss limits) and what they mean for design |
+| `studies/prop.py` | compact 2-4 position books + challenge simulation (pass rates by day 90 / 180) |
 | `STRATEGIES.md` | status board: every strategy and where it is in the pipeline |
 | `LEDGER.md` | every hypothesis tested, the result and the decision (including the failures) |
 | `results/` | dated reports (committed) |
@@ -59,6 +61,13 @@ Failures stay in `LEDGER.md` (the graveyard), so the same idea isn't re-tested b
 4. Judge on the last 12 months **and** the 2 years before; an idea must be positive in both.
 5. Trades on the same day across coins move together: use the weekly t-stat. |t| < 2 is not significant.
 6. A filter must raise total R per month, not just average R on fewer trades.
+
+## Time zone
+
+The user trades on Singapore time (SGT, UTC+8). The crypto daily candle opens at **08:00 SGT** (00:00 UTC); 4H
+candles open at 00:00 / 04:00 / 08:00 / 12:00 / 16:00 / 20:00 SGT. Code works in UTC internally; every alert or
+schedule shown to the user is in SGT and lands at a 4H candle open, based on the previous candle's close.
+Weekly books rebalance at **Monday 08:00 SGT**.
 
 ## Regimes (lib/regime.py)
 
