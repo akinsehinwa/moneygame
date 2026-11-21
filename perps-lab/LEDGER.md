@@ -159,3 +159,15 @@ Monday tickets use TradingView for everything recent: daily candles and the long
 correlation 0.94 / 0.98 with the archive's account ratio for BTC / SOL, same level) fill the archive's 1-2 day gap,
 so signals use Sunday's completed candle; entry, stop and take-profit prices come from TradingView live prices. First
 real tickets: Monday 2026-11-23 just after 08:00 SGT. The 2026-11-21 tickets file is a format preview only.
+
+### Pre-registered 2026-11-21: trade management for the weekly tickets (studies/manage.py)
+Books: 100K COMBO top 2+2 and 50K CROWDFADE top 2+2 (no overlap), stop 3 ATR, TP 3R, entry Monday 08:00 SGT.
+Check-ins at Thursday 08:00 SGT (72h) and Sunday 08:00 SGT (144h). Variants (6):
+- V0 hold to the Monday exit (baseline, 7 days).
+- V1 cut losers: at a check-in, close if the trade is at or below -0.5R.
+- V2 protect winners: at a check-in, if the trade is at or above +1R, move the stop to breakeven.
+- V3 = V1 + V2.
+- V4 majors to day 10: majors (BTC ETH BNB XRP SOL TRX HYPE ZEC DOGE ADA) that are in profit at the Monday exit are
+  held up to Thursday 08:00 (day 10) with their stop and TP; everything else exits Monday.
+- V5 = V4 for any coin in profit (NOT allowed for non-majors by the firm; reference only, to see if holding longer pays).
+Measure avg R per position, weekly Sharpe, both periods. Adopt a rule only if it beats V0 in both periods.
