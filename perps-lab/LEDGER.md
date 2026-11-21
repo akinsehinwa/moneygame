@@ -42,3 +42,10 @@ Rule: when a coin's funding rate, normalized to 8 hours, is >= +0.05% (crowded l
 (crowded shorts), go long. Signal at the first hour after the funding time, entry at that hour's open. Stop 2 x 4h
 ATR(14), target 2R, max 48h, one trade per coin at a time. Funding received/paid is NOT added to R (fades usually
 receive it, so this is conservative). 1 variant. Pass if: positive in both periods with weekly t > 1 in at least one.
+
+### Pre-registered 2026-11-21: "151 Trading Strategies" batch 1 (studies/p151.py, map in ADAPTATION.md)
+20 basket strategies, one fixed variant each (parameters in each function's docstring): direct ports MOM, LOWVOL,
+RESMOM, CONTRA, MA2, MA3, TSMOM, CHANFADE, DUALMOM, TRENDLO, RSQ; lateral adaptations CARRY, MOMCARRY, DOLLARCARRY,
+SKEW, NEWLIST, SECTOR, VOLTARGET, FOMCDAY, DISTRESS. Daily portfolio engine, net of 0.06%/side costs AND funding.
+Pass rule: net Sharpe >= 0.5 in both periods; long-only books must also beat the equal-weight long basket in both.
+With 20 tests, about 1 could pass by luck at this bar: a pass is a candidate for shadow testing, not proof.
