@@ -180,3 +180,4 @@ Fill when price trades through the limit. Stop / TP at the same % distances from
 regardless of fill time. Compare cancel rules: cancel if not filled within 4h, 24h (Tue 08:00), 72h (Thu 08:00), or
 never (until Monday). Measure: fill rate, avg R of filled trades, and R per ticket issued (unfilled = 0), both
 periods, both accounts. Also avg R by fill delay. Pick the rule with the best R per ticket in both periods.
+| 2026-11-21 | Limit fills and cancel timing (results/2026-11-21-limit-fills-and-cancel-timing.md) | 4 rules | Cancel after 4h is worst (fill rate ~75%, R per ticket negative in the last 12m). Fills after 4-72h are as good as fast ones; fills after 72h mixed (50K -0.17R, n=16). Cancel at Thursday 08:00 SGT: best or near-best in 3 of 4 period x account cells, ~94% filled | Keep unfilled orders until the Thursday 08:00 SGT check-in, then cancel |

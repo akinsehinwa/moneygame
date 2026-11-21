@@ -43,6 +43,9 @@ def main():
     live, live_at = live_prices()
     d = prop.C.index[-1]                                    # latest complete daily bar in the archive
     scores = {"COMBO": prop.COMBO_S, "CROWDFADE": prop.CF_S}
+    now = dt.datetime.now(SGT)
+    iso = now.isocalendar()
+    batch = "W%d-%02d" % (iso[0], iso[1])
     used, tickets = set(), []
     for acct, size, strat in ACCOUNTS:
         s = scores[strat].loc[d].where(prop.el.loc[d]).dropna().sort_values()
@@ -51,7 +54,7 @@ def main():
         ok = (stop_pct <= MAX_STOP) & ~s.index.isin(list(used))
         s = s[ok]
         picks = [(c, 1) for c in s.index[::-1][:K]] + [(c, -1) for c in s.index[:K]]
-        for coin, side in picks:
+        for n, (coin, side) in enumerate(picks, 1):
             used.add(coin)
             sp = float(stop_pct[coin])
             px = float(live[coin]) if live and coin in live else float(prop.C.at[d, coin])   # Binance contract units
@@ -62,7 +65,10 @@ def main():
             risk_usd = size * RISK
             notional = risk_usd / (sp + 2 * COST)           # fees + slippage included in the risk
             margin = max(notional / 5, notional * (sp + 0.05))
-            tickets.append({"account": acct, "strategy": strat, "coin": coin, "side": "LONG" if side == 1 else "SHORT",
+            tickets.append({"batch": batch, "id": "%s-%s-%s-%s" % (batch, acct, coin, "L" if side == 1 else "S"),
+                            "margin to enter USDT": notional / 5,
+                            "margin to add USDT": margin - notional / 5,
+                            "account": acct, "strategy": strat, "coin": coin, "side": "LONG" if side == 1 else "SHORT",
                             "limit entry": px, "stop": stop, "take-profit": target, "stop %": sp * 100,
                             "position size USDT": notional, "margin USDT": margin,
                             "effective leverage": notional / margin, "qty": notional / px,
@@ -71,33 +77,38 @@ def main():
                             "unit": "1000 coins" if mult[coin] > 1 else "1 coin"})
     T = pd.DataFrame(tickets)
     st = label(resample(load_1h("BTC"), 24)).iloc[-1]
-    now = dt.datetime.now(SGT)
-    lines = ["# Tickets (generated %s SGT)" % now.strftime("%a %Y-%m-%d %H:%M"), "",
+    lines = ["# Ticket batch %s (generated %s SGT)" % (batch, now.strftime("%a %Y-%m-%d %H:%M")), "",
              "Signals: data through the daily candle of %s (closed %s 08:00 SGT). Prices: %s. **If your fill "
              "differs, set the stop and take-profit from your actual entry using the %% columns** (long: stop = entry x "
              "(1 - stop%%), TP = entry x (1 + TP%%); short: the reverse)." % (
                  pd.to_datetime(d, unit="ms").date(), (pd.to_datetime(d, unit="ms") + pd.Timedelta(days=1)).date(),
                  ("TradingView live (BINANCE perps), fetched %s UTC" % live_at) if live else "last daily close (stale)"),
              "BTC state at that close: %s (20-day move %+.1f%%)." % (st.state, st.r20 * 100), "",
-             "Rules: risk %.1f%% of the account per coin; 5x isolated, then ADD margin up to the 'margin' figure so "
-             "liquidation sits beyond the stop; limit entry; stop and take-profit attached; close at the next weekly "
-             "rebalance if neither is hit." % (RISK * 100), ""]
+             "How to place: 5x isolated, limit order with the 'margin to enter' in the margin field (position = margin x 5), "
+             "stop-loss and take-profit attached. Right after it fills, ADD the 'margin to add' to the position (keeps "
+             "liquidation beyond the stop; 0 = nothing to add). Hold until stop, take-profit, or the close at next Monday "
+             "08:00 SGT. No early exits (tested: they don't help). Unfilled orders stay until the Thursday 08:00 SGT check-in, "
+             "then cancel (tested). Risk %.1f%% of the account per coin." % (RISK * 100), ""]
     for acct, size, strat in ACCOUNTS:
         x = T[T.account == acct]
         lines += ["## %s account (%s), risk $%s per coin" % (acct, strat, f"{size * RISK:,.0f}"), "",
-                  "| coin | side | stop % | TP % | position size (USDT) | margin (USDT) | eff. lev | limit entry | stop | take-profit |",
+                  "| ticket | coin | side | limit entry | stop-loss | take-profit | margin to enter (USDT) | margin to add (USDT) | stop % | TP % |",
                   "|---|---|---|---|---|---|---|---|---|---|"]
-        for r in x.itertuples():
+        for r in x.to_dict("records"):
             f = lambda v: ("%.6g" % v)
-            lines.append("| %s%s | %s | %.1f%% | %.1f%% | %s | %s | %.1fx | %s | %s | %s |" % (
-                r.coin, " (per 1000)" if r.unit != "1 coin" else "", r.side, r._8, r._13, f"{r._9:,.0f}", f"{r._10:,.0f}",
-                r._11, f(r._5), f(r.stop), f(r._7)))
+            lines.append("| %s | %s%s | %s | %s | %s | %s | %s | %s | %.1f%% | %.1f%% |" % (
+                r["id"], r["coin"], " (1000)" if r["unit"] != "1 coin" else "", r["side"], f(r["limit entry"]),
+                f(r["stop"]), f(r["take-profit"]), f"{r['margin to enter USDT']:,.0f}", f"{r['margin to add USDT']:,.0f}",
+                r["stop %"], r["tp %"]))
         lines += ["", "Total margin: $%s (%.0f%% of the account; firm limit 65%%). Max loss if every stop hits: "
                   "$%s (%.1f%%; daily limit 5%%)." % (f"{x['margin USDT'].sum():,.0f}", x["margin USDT"].sum() / size * 100,
                                                      f"{x['risk USDT'].sum():,.0f}", x["risk USDT"].sum() / size * 100), ""]
     os.makedirs(os.path.join(config.LAB, "tickets"), exist_ok=True)
-    f = os.path.join(config.LAB, "tickets", "%s.md" % now.strftime("%Y-%m-%d"))
+    f = os.path.join(config.LAB, "tickets", "%s.md" % batch)
     open(f, "w").write("\n".join(lines))
+    T.assign(issued_sgt=now.strftime("%Y-%m-%d %H:%M"), signal_day=str(pd.to_datetime(d, unit="ms").date()),
+             btc_state=st.state, btc_r20=round(float(st.r20), 4), status="issued").to_json(
+        os.path.join(config.LAB, "tickets", "%s.json" % batch), orient="records", indent=1)
     print("\n".join(lines))
     print("written:", f)
 
