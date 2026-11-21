@@ -64,6 +64,8 @@ Failures stay in `LEDGER.md` (the graveyard), so the same idea isn't re-tested b
 4. Judge on the last 12 months **and** the 2 years before; an idea must be positive in both.
 5. Trades on the same day across coins move together: use the weekly t-stat. |t| < 2 is not significant.
 6. A filter must raise total R per month, not just average R on fewer trades.
+7. Before calling anything real, run Hansen's SPA / Romano-Wolf StepM (studies/spa.py, `arch` package) over EVERY
+   variant tried, rejected ones included. A single-test p-value means little after many tries.
 
 ## Live data (TradingView)
 
