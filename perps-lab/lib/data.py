@@ -206,3 +206,55 @@ def load_metrics(coin):
                 avg = (tv["o"][i] + tv["h"][i] + tv["l"][i] + tv["c"][i]) / 4
                 df.loc[len(df)] = [ms, np.nan, np.nan, np.nan, np.nan, avg, np.nan]
     return df
+
+
+def path_metrics4h(coin):
+    return os.path.join(config.DATA, "%s-metrics4h.json" % coin)
+
+
+def _metrics_day_4h(sym, day):
+    """4-hour aggregates of one daily metrics file: [[bar_open_ms, oi_last, top_pos_mean, global_ls_mean, taker_mean]]."""
+    blob = _get(METRICS % (sym, sym, day.isoformat()))
+    if not blob:
+        return []
+    rows = []
+    with zipfile.ZipFile(io.BytesIO(blob)) as z:
+        for n in z.namelist():
+            for r in csv.reader(io.TextIOWrapper(z.open(n), "utf-8")):
+                if r and r[0][:2] == "20":
+                    try:
+                        t = int(dt.datetime.strptime(r[0], "%Y-%m-%d %H:%M:%S").replace(tzinfo=dt.timezone.utc).timestamp() * 1000)
+                        rows.append([t] + [float(x) if x else np.nan for x in r[2:8]])
+                    except ValueError:
+                        pass
+    if not rows:
+        return []
+    a = pd.DataFrame(rows, columns=["t", "oi", "oiv", "top_acct", "top_pos", "global_ls", "taker"])
+    a["bar"] = a.t // (4 * H) * (4 * H)
+    g = a.groupby("bar").agg(oi=("oi", "last"), top_pos=("top_pos", "mean"), global_ls=("global_ls", "mean"), taker=("taker", "mean"))
+    return [[int(b), *map(float, v)] for b, v in zip(g.index, g.values)]
+
+
+def download_metrics4h(coin, workers=8):
+    sym = config.BINANCE_SYMBOL.get(coin, coin)
+    f = path_metrics4h(coin)
+    have = {r[0]: r for r in json.load(open(f))} if os.path.exists(f) else {}
+    start = dt.date.fromisoformat(config.HISTORY_START)
+    today = dt.datetime.now(dt.timezone.utc).date()
+    days, d = [], start
+    done_days = {r[0] // (24 * H) for r in have.values()}
+    while d < today:
+        if int(dt.datetime(d.year, d.month, d.day, tzinfo=dt.timezone.utc).timestamp() * 1000) // (24 * H) not in done_days:
+            days.append(d)
+        d += dt.timedelta(days=1)
+    with ThreadPoolExecutor(workers) as ex:
+        for rows in ex.map(lambda x: _metrics_day_4h(sym, x), days):
+            for r in rows:
+                have[r[0]] = r
+    json.dump(sorted(have.values()), open(f, "w"))
+    return coin, len(have)
+
+
+def load_metrics4h(coin):
+    a = json.load(open(path_metrics4h(coin))) if os.path.exists(path_metrics4h(coin)) else []
+    return pd.DataFrame(a, columns=["t", "oi", "top_pos", "global_ls", "taker"])

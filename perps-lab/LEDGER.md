@@ -181,3 +181,18 @@ regardless of fill time. Compare cancel rules: cancel if not filled within 4h, 2
 never (until Monday). Measure: fill rate, avg R of filled trades, and R per ticket issued (unfilled = 0), both
 periods, both accounts. Also avg R by fill delay. Pick the rule with the best R per ticket in both periods.
 | 2026-11-21 | Limit fills and cancel timing (results/2026-11-21-limit-fills-and-cancel-timing.md) | 4 rules | Cancel after 4h is worst (fill rate ~75%, R per ticket negative in the last 12m). Fills after 4-72h are as good as fast ones; fills after 72h mixed (50K -0.17R, n=16). Cancel at Thursday 08:00 SGT: best or near-best in 3 of 4 period x account cells, ~94% filled | Keep unfilled orders until the Thursday 08:00 SGT check-in, then cancel |
+
+### Pre-registered 2026-11-21: CF4H, crowd positioning on the 4H clock (studies/cf4h.py)
+Rule: at each 4H close at 08:00 / 12:00 / 16:00 / 20:00 SGT (daytime only), crowd score per coin = mean of the global
+long/short account ratio over the last 6 4h bars (1 day) / its mean over the last 84 bars (14 days) - 1. Long the
+coin with the lowest score (crowd most short vs its norm), short the coin with the highest score; skip a coin already
+held. Entry at the next 4H open (limit at that price). Stop 3 x ATR(14, 4h); skip if the stop is > 15% away (fits 5x
+isolated without extra margin). Take-profit 2R. Time exit 48h. Costs 0.06% per side. 1 variant.
+Pass (standalone): avg R > 0 and weekly Sharpe >= 0.5 in both periods, and positive in both without the 3 best coins.
+If it passes, a slot-constrained two-account simulation (pre-registered here): max 5 open positions per account,
+unfilled limits don't count as positions but count toward margin; margin (open + pending) <= 60%; when 5 are open,
+pending limits are cancelled. Allocation schemes: A) each account = its weekly book (4 slots) + CF4H in the free slot;
+B) 100K weekly COMBO + 1 CF4H slot, 50K CF4H only (5 slots); C) both accounts CF4H only (5 slots, the 50K takes the
+2nd-ranked signal so the accounts never hold the same coin). Risk 1.5% per position (weekly) and 1.0% (CF4H).
+Challenge outcomes by day 90 / 180 as before.
+Note: Bitfunded's treatment of pending-order margin is unverified (site blocked here); the simulation counts it.
