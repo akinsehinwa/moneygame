@@ -23,6 +23,7 @@ Nothing here depends on any other project: the folder can be copied out as its o
 | `shadow.py` | forward paper test of passed strategies: freezes weekly weights, marks PnL → `shadow/STATUS.md` |
 | `PROP_RULES.md` | the prop account's rules (5 positions, stops, 7-day hold, loss limits) and what they mean for design |
 | `studies/prop.py` | compact 2-4 position books + challenge simulation (pass rates by day 90 / 180) |
+| `tickets.py` | weekly tickets for the two accounts (100K COMBO, 50K CROWDFADE, 1.5% per coin) → `tickets/<date>.md` |
 | `STRATEGIES.md` | status board: every strategy and where it is in the pipeline |
 | `LEDGER.md` | every hypothesis tested, the result and the decision (including the failures) |
 | `results/` | dated reports (committed) |

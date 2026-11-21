@@ -144,3 +144,12 @@ first pass matters). Rules as PROP_RULES.md (same % limits on 100K). Weekly book
 - Funded phase (100K and 50K): same books at 0.5 / 1 / 1.5%: 180 days from every start, payout of any profit every
   15 days at 80% (balance resets, the 8% floor stays): P(blown within 180 days), average payout per month in USD.
 Informational (no pass rule). Same caveat: strategies were chosen on this history, so results are optimistic.
+
+### 2026-11-21: live-trading constraints (user trades 5x isolated, limit entries, 1.75% risk today)
+- Bug fixed in studies/prop.py: on the exit candle the wick beyond the stop was counted as loss (up to -3.5R instead of
+  -1R), which overstated daily-limit breaches. Earlier prop results were too pessimistic; re-run below.
+- 5x isolated liquidates about 19.5% from entry, but the tested 3-ATR stop is median 24% away (90th pct 37%).
+  Variants tested now (counted): stop 1.5 x ATR and 2 x ATR, coins skipped if the stop is > 15% away, target 3R.
+| 2026-11-21 | Tighter stops for 5x isolated (stop 1.5 / 2 ATR, skip stops > 15%) | 2 | 1.5 ATR: one account negative in the old period; 2 ATR: weaker than 3 ATR. Solution instead: keep 3 ATR and ADD isolated margin so liquidation sits beyond the stop (user's suggestion) | keep 3 ATR + added margin |
+| 2026-11-21 | Two-account allocation (results/2026-11-21-prop-two-accounts-different-rankings.md) | 3 schemes | Alternate ranks (1+3 / 2+4): the 2+4 account has no edge (Sharpe −0.67 / 0.08). Different rankings, no overlap: 100K COMBO top 2+2 (0.46 / 1.09) + 50K CROWDFADE top 2+2 (1.13 / 1.78): at 1.5-1.75% risk, at least one account passes both stages by day 180 in 23-35% of starts, both fail together 0%, daily limit never hit. MOM as the second account fails more | ADOPT: 100K COMBO, 50K CROWDFADE, 1.5% per coin |
+| 2026-11-21 | Entry weekday and signal age (results/2026-11-21-cadence-entry-weekday-and-signal-age.md) | 14 | Monday 08:00 SGT entry is among the best days for both strategies with fresh or 2-day-old signals; results swing a lot by weekday (the edge is noisy) | Tickets generated Sunday evening SGT, placed Monday 08:00 SGT |

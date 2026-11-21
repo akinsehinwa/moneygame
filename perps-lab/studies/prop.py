@@ -75,7 +75,8 @@ def trade(coin, t_entry, side, atr):
             exit_px = max(target, o) if side == 1 else min(target, o)
         if exit_px is not None:
             r = ((exit_px - entry) * side - COST * (entry + exit_px)) / risk
-            ts.append(T[j]); mc.append(r); mw.append(min(r, ((adverse - entry) * side - COST * entry * 2) / risk))
+            # the trade is closed at exit_px: the rest of that candle's wick is not a loss (bug fixed 2026-11-21)
+            ts.append(T[j]); mc.append(r); mw.append(r)
             return r, pd.DataFrame({"close_R": mc, "worst_R": mw}, index=ts)
         ts.append(T[j])
         mc.append(((cc - entry) * side - COST * entry * 2) / risk)
