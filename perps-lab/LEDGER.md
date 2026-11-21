@@ -233,3 +233,9 @@ Weekly ticket, check-in and shadow tasks paused; all paper books and forward tes
 2026-12-23 (rules are frozen and signals are deterministic, so a batch replay equals running weekly).
 New bar for prop strategies: >= +0.2R per trade after costs with >= 20 trades a month per account, positive in both
 periods, and a challenge simulation passing stage 1 within ~45 days in most starts.
+
+### Pre-registered 2026-11-21: data-snooping check with arch (studies/spa.py)
+All 28 basket books tested so far (p151 batch 1: 20, batch 2: 6, batch 3: OIFADE and OIFADE+CROWDFADE), daily net
+returns (costs + funding), loss = -return, benchmark = cash (0). Hansen's SPA test (is the best book better than cash
+after accounting for all 28 tried?) and Romano-Wolf StepM (which books beat cash), stationary bootstrap, 10,000 reps,
+block 10 days, 5% level. Run on the whole sample (2023-11-20 onward) and on the last 12 months.
