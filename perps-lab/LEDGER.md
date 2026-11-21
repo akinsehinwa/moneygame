@@ -240,3 +240,17 @@ returns (costs + funding), loss = -return, benchmark = cash (0). Hansen's SPA te
 after accounting for all 28 tried?) and Romano-Wolf StepM (which books beat cash), stationary bootstrap, 10,000 reps,
 block 10 days, 5% level. Run on the whole sample (2023-11-20 onward) and on the last 12 months.
 | 2026-11-21 | Data-snooping check, SPA + StepM over all 28 basket books (results/2026-11-21-data-snooping-check-spa-stepm.md) | 28 | Whole sample: best = MOMCARRY (Sharpe 1.30; CROWDFADE 1.28), single-test p 0.012 but SPA p 0.24-0.36; StepM: no book beats cash. Last 12m: best = PAIRS (2.62), SPA p 0.19-0.33; StepM: none | Nothing we found is statistically better than cash once all tries are counted (and 28 undercounts: ~100+ variants were tried in total). The robustness checks were encouraging but not proof; forward tests decide. From now on every candidate also goes through SPA / StepM over the full list of variants tried |
+
+### Pre-registered 2026-11-21: shortlist setup detectors (studies/shortlist_bt.py)
+Scans at the 4H closes of 08:00 and 20:00 SGT, all 72 coins, 4H bars, ATR(14, 4H) = A. BTC state = last completed day.
+- COIL: Bollinger(20) width in the lowest 10% of the last 120 bars AND close within 1 A of the 20-bar high or low.
+  Levels: break above the 20-bar high (long) or below the 20-bar low (short), whichever comes first within 48h;
+  entry on the touch (stop order), stop at the range middle, target 2R, time exit 72h.
+- SWING50: a leg >= 6 A within the last 30 bars whose extreme formed in the last 12 bars, now retraced 20-45%.
+  Level: limit at the 50% retracement (valid 48h), stop at 78.6% + 0.1 A, target the leg's extreme, time exit 72h.
+- DISP: the scan bar's body >= 2 A. Level: limit at the body's midpoint (valid 24h), stop beyond the bar's opposite
+  extreme + 0.1 A, target 2R, time exit 72h.
+1h fills, stop first on ambiguous bars, costs 0.06% per side. Questions: (1) do flagged coins move more over the next
+24h than the rest (range in ATR units)? (2) per detector x side x BTC state: hit rate of the level and avg R after the
+fill, both periods. A detector (x side) is useful only if avg R > 0 in both periods; per-state cells reported for
+context, not used to pick (would be data-mined). 3 detectors x 2 sides = 6 tested legs.
