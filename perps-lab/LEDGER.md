@@ -15,9 +15,16 @@ Decisions: ADOPT (moves up the pipeline) / PROBATION (keep testing) / REJECT (gr
 | 2026-11-21 | Q4 FUND: fade funding >= +0.05% / <= −0.05% per 8h | 1 | short +0.04 old (t 1.8) / −0.03 12m (only 9 coins hit the threshold); long +0.02 / −0.04 | REJECT (edge gone in the last 12 months) |
 | 2026-11-21 | p151 batch 1: 20 basket strategies (direct + lateral), costs + funding | 20 | 4 pass the Sharpe >= 0.5 bar in both periods: MOM (0.71 / 1.12), TRENDLO (0.74 / 1.56), MOMCARRY (1.42 / 0.74), SECTOR (0.83 / 1.32). All four are momentum-family, so one finding, not four. Fails: LOWVOL, RESMOM (−0.02 / 1.51), CONTRA, MA2, MA3, TSMOM (0.78 / 0.45), CHANFADE, DUALMOM, RSQ, CARRY (1.36 / −0.10), DOLLARCARRY, SKEW, NEWLIST, VOLTARGET, FOMCDAY, DISTRESS | see below |
 | 2026-11-21 | Robustness of the 4 passes (results/2026-11-21-p151-robustness-of-batch-1-passes.md) | 42 neighbours | MOM: positive across most neighbours with formation 30-60 days and skip 0-7 days (crypto momentum is short-horizon; skip 14+ fails); without its best 3 coins ~0 in both periods. SECTOR: positive at 5 of 6 lookbacks; without best 3 coins ~0 in the last 12m. TRENDLO: the last 12m is one coin (PIPPIN +1.96 of +1.59); without it, negative. MOMCARRY: carry leg dead in the last 12m | MOM, SECTOR: PROBATION → shadow. MOMCARRY: PROBATION. TRENDLO: REJECT (one-coin result) |
+| 2026-11-21 | p151 batch 2: PAIRS (most-correlated pairs, short the 7-day winner) | 1 | Sharpe −1.59 old / +2.67 12m; w/o best 3 coins −0.67 / +0.10 | REJECT (works only in the last 12m) |
+| 2026-11-21 | p151 batch 2: ECO (mean reversion inside ETH / SOL / BTC / BNB ecosystems) | 1 | Sharpe −0.91 / +1.58 | REJECT (same regime flip as PAIRS) |
+| 2026-11-21 | p151 batch 2: PIVOT (daily pivot, 1h execution) | 1 | Sharpe −3.05 / −4.89, about −110%/yr: costs from constant flipping | REJECT |
+| 2026-11-21 | p151 batch 2: DISPMOM (MOM only when dispersion is high) | 1 | Sharpe 0.30 / 1.81 vs plain MOM 0.71 / 1.12; w/o best 3 −0.16 / +0.07 | REJECT (the gate hurts in the old period) |
+| 2026-11-21 | p151 batch 2: CROWDFADE (fade the crowd: global long/short account ratio, 7d vs 90d, short the 7 most crowded-long, long the 7 most crowded-short) | 1 | Sharpe 0.92 old / 1.85 12m; w/o best 3 coins +0.13 / +0.02; robustness: 26 of 27 neighbours positive in both periods, every calendar year positive, correlation with MOM 0.13, 50/50 with MOM Sharpe 1.10 / 1.98 | ADOPT → shadow |
+| 2026-11-21 | p151 batch 2: CROWDTOP (follow top traders vs the crowd) | 1 | Sharpe 0.36 / 0.93; w/o best 3 negative both | REJECT |
 | 2026-11-21 | SWP: liquidity-sweep fade at the 20-bar extreme | 1 | −0.06 to −0.10R both periods, nearly every regime | REJECT |
 
 ## Queue (not tested yet)
+- Regime switch between MOM (momentum) and PAIRS/ECO (mean reversion): mean reversion won the last 12m, momentum both periods. CAUTION: suggested by batch-2 results, so it needs a walk-forward rule chosen without peeking.
 - Breadth scaled to 72 coins (e.g. >= 10 same-side breakouts = top half) on BRK longs only. CAUTION: suggested by the Q2 data (median breadth 10), so it needs the next 6 months as a true out-of-sample check.
 - Strategies from "151 Trading Strategies" (Kakushadze & Serur) that apply to a single perp or a cross-section of coins (pending: the paper couldn't be downloaded from this environment).
 
@@ -65,3 +72,6 @@ Sharpe >= 0.5 and no drawdown beyond the backtest's worst (MOM −25%, SECTOR �
 clusters), PIVOT (3.14, 1h execution), CROWDFADE and CROWDTOP (9.2 hedging pressure via Binance long/short metrics),
 DISPMOM (6.3 dispersion as a gate on MOM). Pass rule, stricter than batch 1 after its lessons: net Sharpe >= 0.5 in
 both periods AND positive in both periods without the book's 3 best coins.
+
+### 2026-11-21: CROWDFADE added to the shadow book (before its first rebalance on 2026-11-23). Same review rule:
+after ~12 rebalances, forward Sharpe >= 0.5 and drawdown within the backtest's worst (−23%).

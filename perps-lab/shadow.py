@@ -19,16 +19,17 @@ import pandas as pd
 
 import config
 from lib import portfolio as pf
-from lib.data import download_all, download_funding
+from lib.data import download_all, download_funding, download_metrics
 
 START = "2026-11-22"            # first rebalance bar (Sunday 2026-11-22, closes Monday 2026-11-23 00:00 UTC)
-SHADOW = ["MOM", "SECTOR"]      # strategies in the shadow book (see STRATEGIES.md)
+SHADOW = ["MOM", "SECTOR", "CROWDFADE"]   # strategies in the shadow book (see STRATEGIES.md)
 DIR = os.path.join(config.LAB, "shadow")
 BOOK = os.path.join(DIR, "book.json")
 DAY = 24 * 3600_000
 # Backtest expectations, for comparison (results/2026-11-21-p151-all.md).
 EXPECT = {"MOM": {"Sharpe old": 0.71, "Sharpe 12m": 1.12, "ann % 12m": 30.7},
-          "SECTOR": {"Sharpe old": 0.83, "Sharpe 12m": 1.32, "ann % 12m": 17.9}}
+          "SECTOR": {"Sharpe old": 0.83, "Sharpe 12m": 1.32, "ann % 12m": 17.9},
+          "CROWDFADE": {"Sharpe old": 0.92, "Sharpe 12m": 1.85, "ann % 12m": 50.9}}   # results/2026-11-21-p151-batch-2-all.md
 
 
 def fetch():
@@ -36,6 +37,8 @@ def fetch():
     list(download_all())
     with ThreadPoolExecutor(12) as ex:
         list(ex.map(download_funding, config.COINS))
+    with ThreadPoolExecutor(4) as ex:
+        list(ex.map(download_metrics, config.COINS))
 
 
 def load_book():
@@ -46,11 +49,13 @@ def freeze(book, P):
     sys.argv = [sys.argv[0], "--list"]
     sys.path.insert(0, os.path.join(config.LAB, "studies"))
     import p151
+    import p151b
+    strats = {**p151.STRATS, **p151b.STRATS}
     start_ms = int(pd.Timestamp(START, tz="UTC").timestamp() * 1000)
     now = dt.datetime.now(dt.timezone.utc)
     new = 0
     for name in SHADOW:
-        W, every = p151.STRATS[name]()
+        W, every = strats[name]()
         days = W.index[pf.rebalance_days(W.index, every) & (W.index >= start_ms)]
         rb = book["rebalances"].setdefault(name, {})
         for d in days:

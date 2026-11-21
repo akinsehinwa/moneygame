@@ -18,14 +18,17 @@ Stages: Idea → Backtest → Robust → Shadow → Candidate (see README). Resu
 | FUND | fade funding-rate extremes | **Rejected** | short +0.04 (t 1.8) | short −0.03 | edge faded; extremes now rare |
 | MOM | basket: cross-sectional momentum, 60d skip 7d, top/bottom 7 (paper 3.1) | **Shadow (from 2026-11-23)** | Sharpe 0.71 | Sharpe 1.12 | robust for 30-60d formation, skip 0-7d; gains lean on big winners |
 | SECTOR | basket: crypto-sector momentum rotation (paper 4.1) | **Shadow (from 2026-11-23)** | Sharpe 0.83 | Sharpe 1.32 | robust at 5/6 lookbacks; hand-made sector map |
+| CROWDFADE | basket: fade crowd positioning (Binance long/short account ratio) (paper 9.2, lateral) | **Shadow (from 2026-11-23)** | Sharpe 0.92 | Sharpe 1.85 | best result so far: 26/27 neighbours positive, every year positive, low correlation with MOM |
 | MOMCARRY | basket: 50/50 momentum + funding carry (paper 8.4) | Probation | Sharpe 1.42 | Sharpe 0.74 | carry leg alone failed the last 12m |
 | TRENDLO | long-only trend book (paper 4.6) | **Rejected** | Sharpe 0.74 | Sharpe 1.56 | last 12m = one coin (PIPPIN) |
 | CARRY | basket: funding carry (paper 5.11/8.2/9.1) | Rejected | Sharpe 1.36 | Sharpe −0.10 | strong before, gone in the last 12m |
 | other p151 | LOWVOL, RESMOM, CONTRA, MA2, MA3, TSMOM, CHANFADE, DUALMOM, RSQ, DOLLARCARRY, SKEW, NEWLIST, VOLTARGET, FOMCDAY, DISTRESS | Rejected | | | see results/2026-11-21-p151-all.md |
+| PAIRS, ECO | mean reversion in correlated pairs / ecosystems (paper 3.8, 3.9.1, 14.4) | Rejected | Sharpe −1.6 / −0.9 | Sharpe +2.7 / +1.6 | strong only in the last 12m (regime-dependent) |
+| PIVOT, CROWDTOP, DISPMOM | daily pivots; follow top traders; MOM gated by dispersion | Rejected | | | see results/2026-11-21-p151-batch-2-all.md |
 | ROUTER | the pool switched by coin regime | **Robust? (no)** | | | walk-forward +0.064R, 6/8 quarters, t 0.3: not significant yet |
 
 ## Next ideas queued
-0. MOM and SECTOR are in the shadow book (shadow.py, shadow/STATUS.md) from the 2026-11-23 rebalance. Judge after ~3 months / 12 rebalances: forward Sharpe should not be far below the backtest's.
+0. MOM, SECTOR and CROWDFADE are in the shadow book (shadow.py, shadow/STATUS.md) from the 2026-11-23 rebalance. Judge after ~3 months / 12 rebalances: forward Sharpe should not be far below the backtest's.
 1. Queue round 1 (BTC direction, breadth, relative strength, funding) done: all rejected. Next: the applicable
    strategies from "151 Trading Strategies", and breadth scaled to 72 coins (flagged as data-suggested).
 2. Put the coin-regime router into a shadow paper book once one cell is clearly significant.

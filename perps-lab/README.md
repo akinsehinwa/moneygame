@@ -12,6 +12,7 @@ Nothing here depends on any other project: the folder can be copied out as its o
 |---|---|
 | `config.py` | the universe (72 coins), costs, evaluation windows, router thresholds |
 | `fetch.py` | download / update 1h history from Binance's public data archive (data.binance.vision) |
+| `fetch_metrics.py` | download Binance positioning metrics (open interest, long/short ratios, taker flow) |
 | `backtest.py` | run strategies on every coin → `data/trades.pkl`, each trade tagged with regimes |
 | `evaluate.py` | scorecards, results by coin regime, walk-forward router test → `results/<date>-<title>.md` |
 | `strategies/` | one file per strategy, same interface (see `strategies/__init__.py`) |

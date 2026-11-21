@@ -1,7 +1,7 @@
 # Shadow book status
 
 Paper only. Frozen weekly weights, marked to Binance daily closes with costs and funding.
-Started 2026-11-22. Updated 2026-11-21 04:51 UTC.
+Started 2026-11-22. Updated 2026-11-21 05:17 UTC.
 
 No rebalance frozen yet: the first one is the bar that closes Monday 2026-11-23 00:00 UTC.
 
@@ -10,5 +10,9 @@ No rebalance frozen yet: the first one is the bar that closes Monday 2026-11-23 
 No marked days yet (0 rebalance(s) frozen).
 
 ## SECTOR
+
+No marked days yet (0 rebalance(s) frozen).
+
+## CROWDFADE
 
 No marked days yet (0 rebalance(s) frozen).
