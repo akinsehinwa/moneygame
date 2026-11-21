@@ -75,3 +75,16 @@ both periods AND positive in both periods without the book's 3 best coins.
 
 ### 2026-11-21: CROWDFADE added to the shadow book (before its first rebalance on 2026-11-23). Same review rule:
 after ~12 rebalances, forward Sharpe >= 0.5 and drawdown within the backtest's worst (−23%).
+
+### Pre-registered 2026-11-21: prop-ready compact books (studies/prop.py, rules in PROP_RULES.md)
+Books (weekly, Monday 00:00 UTC = 08:00 SGT; every position closed and reopened weekly because of the 7-day hold):
+- CF2: CROWDFADE score, 1 long + 1 short.   - CF4: CROWDFADE, 2 long + 2 short.
+- MOM4: MOM score, 2 long + 2 short.        - COMBO4: average cross-sectional rank of CROWDFADE and MOM, 2 + 2.
+Every position: stop 3 x daily ATR(14) from entry, take-profit 3R, time exit before the next rebalance; 1h execution,
+stop first on ambiguous bars, stops fill at the worse of stop and open. Costs 0.04% fee + 0.02% slippage per side,
+no funding (the firm charges none). Equal risk per position.
+Pass (tradable): avg R > 0 and Sharpe of the weekly R series >= 0.5 in both periods.
+Challenge simulation (informational, all books, risk 0.5 / 1 / 1.5 / 2% of the starting balance per position): every
+weekly start date from 2023-11-20; stage 1 (+8% / -10% floor / -5% daily from the day's starting equity, floating
+losses at each hour's worst price) then stage 2 (+5% / -8%); close everything once floating profit reaches the target.
+CAUTION: the strategies were chosen on this same history, so the simulation is optimistic.
