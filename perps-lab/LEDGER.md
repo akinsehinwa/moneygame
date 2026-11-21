@@ -13,6 +13,8 @@ Decisions: ADOPT (moves up the pipeline) / PROBATION (keep testing) / REJECT (gr
 | 2026-11-21 | Q2 breadth >= 3 coins on BRK | 3 (thr 2/3/5) | long: dropped trades +0.09 old / −0.07 12m (kept +0.10 / +0.18); short: breadth HURTS (isolated shorts +0.18 / +0.05, crowded +0.07 / −0.08) | REJECT (dropped longs positive in the old period) |
 | 2026-11-21 | Q3 RS: weekly rotation, long top 10 / short bottom 10 by 30-day return vs BTC | 1 | long +0.03 old (t 0.4) / −0.03 12m; short +0.02 (t 0.4) / +0.04 (t 0.6) | REJECT (short leg positive but not significant) |
 | 2026-11-21 | Q4 FUND: fade funding >= +0.05% / <= −0.05% per 8h | 1 | short +0.04 old (t 1.8) / −0.03 12m (only 9 coins hit the threshold); long +0.02 / −0.04 | REJECT (edge gone in the last 12 months) |
+| 2026-11-21 | p151 batch 1: 20 basket strategies (direct + lateral), costs + funding | 20 | 4 pass the Sharpe >= 0.5 bar in both periods: MOM (0.71 / 1.12), TRENDLO (0.74 / 1.56), MOMCARRY (1.42 / 0.74), SECTOR (0.83 / 1.32). All four are momentum-family, so one finding, not four. Fails: LOWVOL, RESMOM (−0.02 / 1.51), CONTRA, MA2, MA3, TSMOM (0.78 / 0.45), CHANFADE, DUALMOM, RSQ, CARRY (1.36 / −0.10), DOLLARCARRY, SKEW, NEWLIST, VOLTARGET, FOMCDAY, DISTRESS | see below |
+| 2026-11-21 | Robustness of the 4 passes (results/2026-11-21-p151-robustness-of-batch-1-passes.md) | 42 neighbours | MOM: positive across most neighbours with formation 30-60 days and skip 0-7 days (crypto momentum is short-horizon; skip 14+ fails); without its best 3 coins ~0 in both periods. SECTOR: positive at 5 of 6 lookbacks; without best 3 coins ~0 in the last 12m. TRENDLO: the last 12m is one coin (PIPPIN +1.96 of +1.59); without it, negative. MOMCARRY: carry leg dead in the last 12m | MOM, SECTOR: PROBATION → shadow. MOMCARRY: PROBATION. TRENDLO: REJECT (one-coin result) |
 | 2026-11-21 | SWP: liquidity-sweep fade at the 20-bar extreme | 1 | −0.06 to −0.10R both periods, nearly every regime | REJECT |
 
 ## Queue (not tested yet)
@@ -49,3 +51,6 @@ RESMOM, CONTRA, MA2, MA3, TSMOM, CHANFADE, DUALMOM, TRENDLO, RSQ; lateral adapta
 SKEW, NEWLIST, SECTOR, VOLTARGET, FOMCDAY, DISTRESS. Daily portfolio engine, net of 0.06%/side costs AND funding.
 Pass rule: net Sharpe >= 0.5 in both periods; long-only books must also beat the equal-weight long basket in both.
 With 20 tests, about 1 could pass by luck at this bar: a pass is a candidate for shadow testing, not proof.
+
+Caveat for every basket result: the universe is today's 72 listed coins, so it has survivorship bias (coins that
+were delisted after crashing are missing). That flatters long legs and hurts short legs.

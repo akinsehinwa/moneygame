@@ -17,6 +17,8 @@ Nothing here depends on any other project: the folder can be copied out as its o
 | `strategies/` | one file per strategy, same interface (see `strategies/__init__.py`) |
 | `studies/` | tests that need every coin at once (breadth, rotation, funding); they merge trades into `data/trades.pkl` |
 | `lib/` | data, indicators, regimes, trade simulation |
+| `ADAPTATION.md` | every chapter of "151 Trading Strategies" mapped to a crypto-perp version |
+| `lib/portfolio.py` | daily basket backtester (costs + funding) for momentum / carry / rotation books |
 | `STRATEGIES.md` | status board: every strategy and where it is in the pipeline |
 | `LEDGER.md` | every hypothesis tested, the result and the decision (including the failures) |
 | `results/` | dated reports (committed) |
