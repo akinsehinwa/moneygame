@@ -12,9 +12,13 @@ Stages: Idea → Backtest → Robust → Shadow → Candidate (see README). Resu
 | SQZ | 4h squeeze breakout | Backtest | positive | negative | short in UP/TREND coins holds (+0.61 / +0.28) |
 | ST4 | 4h SuperTrend(10,3) | Backtest | positive | ~0 | edge faded in the last 12 months |
 | STD | daily SuperTrend(10,2) | Backtest | long +0.05 | long +0.13 | long in UP/TREND + RANGE/CHOP; short in DOWN/CHOP |
+| BRKB | BRK only in BTC's 4h trend direction | **Rejected** | long +0.06 / short −0.09 | long +0.14 / short −0.04 | helps the last 12m only; R/month unchanged |
+| BRK+breadth | BRK when >= 3 coins break out together | **Rejected** | | | dropped longs still positive in the old period; breadth hurts shorts |
+| RS | weekly relative strength vs BTC, top/bottom 10 | **Rejected** | long +0.03 / short +0.02 | long −0.03 / short +0.04 | short leg positive but t < 1 |
+| FUND | fade funding-rate extremes | **Rejected** | short +0.04 (t 1.8) | short −0.03 | edge faded; extremes now rare |
 | ROUTER | the pool switched by coin regime | **Robust? (no)** | | | walk-forward +0.064R, 6/8 quarters, t 0.3: not significant yet |
 
 ## Next ideas queued
-1. Add better building blocks (see LEDGER "queue"): e.g. BTC-direction filter on breakouts, breadth (many coins
-   breaking out together), relative strength vs BTC.
+1. Queue round 1 (BTC direction, breadth, relative strength, funding) done: all rejected. Next: the applicable
+   strategies from "151 Trading Strategies", and breadth scaled to 72 coins (flagged as data-suggested).
 2. Put the coin-regime router into a shadow paper book once one cell is clearly significant.

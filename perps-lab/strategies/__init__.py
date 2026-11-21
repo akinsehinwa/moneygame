@@ -5,6 +5,7 @@
     DESCRIPTION = "..."          # one line
     def signals(bars):           # bars = DataFrame t o h l c v, closed bars only
         yield Signal(...)
+    def signals(bars, ctx):      # optional form: ctx["btc"][4] / ctx["btc"][24] are BTC bars (same columns)
 
 A Signal fires at the CLOSE of bar i. Give either target_r (R multiple from the signal close) or target_px, or
 neither (exit by stop / trail / time). trail = (bar index array, stop level array): level k becomes the stop at the

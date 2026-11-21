@@ -15,6 +15,7 @@ Nothing here depends on any other project: the folder can be copied out as its o
 | `backtest.py` | run strategies on every coin → `data/trades.pkl`, each trade tagged with regimes |
 | `evaluate.py` | scorecards, results by coin regime, walk-forward router test → `results/<date>-<title>.md` |
 | `strategies/` | one file per strategy, same interface (see `strategies/__init__.py`) |
+| `studies/` | tests that need every coin at once (breadth, rotation, funding); they merge trades into `data/trades.pkl` |
 | `lib/` | data, indicators, regimes, trade simulation |
 | `STRATEGIES.md` | status board: every strategy and where it is in the pipeline |
 | `LEDGER.md` | every hypothesis tested, the result and the decision (including the failures) |
@@ -47,7 +48,7 @@ Failures stay in `LEDGER.md` (the graveyard), so the same idea isn't re-tested b
 
 1. No look-ahead: signals use closed bars only; regimes use daily bars closed before the signal day.
 2. Costs on every trade: 0.04% fee + 0.02% slippage per side. Stops fill at the worse of the stop and the bar open.
-   When a bar touches both stop and target, the stop counts. Max hold 7 days.
+   When a bar touches both stop and target, the stop counts. Max hold 7 days. Funding payments are not in R yet.
 3. Fix parameters before testing. Count every variant in `LEDGER.md`. After ~20 variants of one idea, treat the
    best as luck.
 4. Judge on the last 12 months **and** the 2 years before; an idea must be positive in both.

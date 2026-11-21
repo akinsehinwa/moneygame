@@ -56,7 +56,7 @@ def scorecard(d):
     for leg, x in d.groupby("leg"):
         o, r = stats(x[~x.recent]), stats(x[x.recent])
         rows.append({"strategy": leg, "n old": o["n"], "avgR old": o["avgR"], "n 12m": r["n"], "avgR 12m": r["avgR"],
-                     "win% 12m": r["win"], "t 12m": r["t"], "holds": "yes" if (o["avgR"] > 0 and r["avgR"] > 0) else ""})
+                     "win% 12m": r["win"], "t 12m": r["t"], "R/mo 12m": round(x[x.recent].r.sum() / 12, 1), "holds": "yes" if (o["avgR"] > 0 and r["avgR"] > 0) else ""})
     return pd.DataFrame(rows)
 
 

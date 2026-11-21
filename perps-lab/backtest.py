@@ -4,7 +4,7 @@
     python3 backtest.py --coins BTC,ETH
 Rules: one open trade per strategy per coin; signals with a stop closer than 0.3 ATR are skipped.
 """
-import argparse, os
+import argparse, inspect, os
 from concurrent.futures import ProcessPoolExecutor
 
 import numpy as np
@@ -28,6 +28,8 @@ def run_coin(args):
     df1 = load_1h(coin)
     h1 = {k: df1[k].values for k in ("t", "o", "h", "l", "c")}
     bars = {4: resample(df1, 4), 24: resample(df1, 24)}
+    btc1 = load_1h("BTC")
+    ctx = {"btc": {4: resample(btc1, 4), 24: btc_d}}   # BTC bars for strategies that take a ctx argument
     creg = regime.coin(bars[24], btc_d)
     out = []
     for name in names:
@@ -36,7 +38,8 @@ def run_coin(args):
         T, C, A = b.t.values, b.c.values, atr(b)
         tf = mod.TIMEFRAME * H
         busy_until = 0
-        for s in mod.signals(b):
+        gen = mod.signals(b, ctx) if len(inspect.signature(mod.signals).parameters) > 1 else mod.signals(b)
+        for s in gen:
             t_close = int(T[s.i]) + tf
             if t_close < busy_until or not abs(C[s.i] - s.stop) >= 0.3 * A[s.i]:
                 continue

@@ -91,3 +91,35 @@ def resample(df1, hours):
     out = out[out.n == hours].drop(columns="n")
     out.index.name = "t"
     return out.reset_index()
+
+
+FUNDING = "https://data.binance.vision/data/futures/um/monthly/fundingRate/%sUSDT/%sUSDT-fundingRate-%s.zip"
+
+
+def path_funding(coin):
+    return os.path.join(config.DATA, "%s-funding.json" % coin)
+
+
+def download_funding(coin):
+    """Monthly funding files: [[funding_time_ms, interval_hours, rate], ...]. The current month isn't archived yet."""
+    sym = config.BINANCE_SYMBOL.get(coin, coin)
+    start = dt.date.fromisoformat(config.HISTORY_START)
+    first = dt.datetime.now(dt.timezone.utc).date().replace(day=1)
+    rows, y, m = {}, start.year, start.month
+    while dt.date(y, m, 1) < first:
+        blob = _get(FUNDING % (sym, sym, "%04d-%02d" % (y, m)))
+        if blob:
+            with zipfile.ZipFile(io.BytesIO(blob)) as z:
+                for n in z.namelist():
+                    for r in csv.reader(io.TextIOWrapper(z.open(n), "utf-8")):
+                        if r and r[0].strip().isdigit():
+                            rows[int(r[0])] = [int(r[0]), float(r[1] or 8), float(r[2])]
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    out = sorted(rows.values())
+    json.dump(out, open(path_funding(coin), "w"))
+    return coin, len(out)
+
+
+def load_funding(coin):
+    a = json.load(open(path_funding(coin))) if os.path.exists(path_funding(coin)) else []
+    return pd.DataFrame(a, columns=["t", "interval_h", "rate"])
