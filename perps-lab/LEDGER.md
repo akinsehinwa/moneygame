@@ -196,3 +196,10 @@ B) 100K weekly COMBO + 1 CF4H slot, 50K CF4H only (5 slots); C) both accounts CF
 2nd-ranked signal so the accounts never hold the same coin). Risk 1.5% per position (weekly) and 1.0% (CF4H).
 Challenge outcomes by day 90 / 180 as before.
 Note: Bitfunded's treatment of pending-order margin is unverified (site blocked here); the simulation counts it.
+| 2026-11-21 | CF4H: crowd positioning on the 4H clock (results/2026-11-21-cf4h-standalone.md) | 1 | Old: +0.015R, weekly Sharpe 0.27 (shorts +0.033, longs ~0); last 12m: -0.064R, Sharpe -3.2 (both sides negative); without best 3 coins negative in both | REJECT. The crowd edge is slow; at 4H speed it is noise. Combined two-account test not run (pre-registered condition not met) |
+
+### Pre-registered 2026-11-21: CF1D, crowd positioning on the daily clock (studies/cf4h.py with --daily)
+Same as CF4H except: one signal a day at 08:00 SGT (00:00 UTC close); score = mean of the 4h long/short ratio over the
+last 18 bars (3 days) / its mean over the last 180 bars (30 days) - 1; time exit 72h. Stop 3 x ATR(14, 4h) (<= 15%),
+TP 2R, long lowest / short highest. 1 variant (2nd speed tried for the crowd idea after weekly and 4H). Same pass rule;
+if it passes, the slot-constrained two-account simulation runs with CF1D in place of CF4H.

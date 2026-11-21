@@ -11,7 +11,12 @@
 - Daily reset 00:00 Singapore time (16:00 UTC). Loss limits include open (floating) losses.
 - Max-loss floor fixed at the starting balance ❓. Profit target counts closed trades only ❓.
 - Leverage up to 5x. Fees 0.04% per side; **no funding or overnight costs** ✔.
-- **Max 5 open positions**, total margin under 65% of the account.
+- **Max 5 open positions**, total margin under 65% of the account (55% on Instant Funding). Per Bitfunded's FAQ and
+  user guide (as provided by the user, 2026-11-21): both limits apply to active, filled positions; unfilled orders do
+  not count while pending. But a fast wick can fill several resting limits at once, and if the result breaks 5
+  positions or 65% margin it can mean a payout cut or a breach. Excessive orders in a short time are prohibited.
+  **Lab rule: open positions + resting limits <= 5, and margin of open positions + resting limits <= 60%, so even
+  if every pending order fills at once nothing is breached; at most 2 new limits per 4H alert.**
 - **Max hold: 10 days for majors** (BTC ETH BNB XRP SOL TRX HYPE ZEC DOGE ADA), **7 days for other coins**.
 - At least 2 closed trades per stage, each held 10+ minutes.
 - **A stop-loss and take-profit on every trade.** No hedging (opposite positions on the same coin).
