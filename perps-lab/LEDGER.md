@@ -101,3 +101,27 @@ CAUTION: the strategies were chosen on this same history, so the simulation is o
   are fairly persistent. The 2-ATR retracement measure was too loose (85-90% everywhere) and is replaced in atlas v2.
 - New plan (PLAN.md): element profiles per coin per Bitcoin state, memory test, groups, then strategy tests validated
   on held-out Bitcoin episodes.
+
+### 2026-11-21: element atlas (results/2026-11-21-element-atlas.md, -element-atlas-e5-by-leg-direction.md)
+- Memory test (90 days -> next 90 days, rank correlation across coins): only the BTC link and volatility are stable
+  coin traits (vol vs BTC 0.57, correlation 0.43, beta up 0.30). Momentum, retracement, displacement and sweep
+  behaviour are NOT stable per coin (about 0): they depend on Bitcoin's state, not on which coin it is.
+- Groups from the stable traits (k=5): G0 majors (low vol, tight BTC link), G1 mid alts (38 coins), G3 high-beta
+  (PEPE BONK WIF FLOKI BRETT BOME ENA ETHFI VIRTUAL STX), G4 independents (TRX WLFI XMR), G2 outliers (PIPPIN RIVER).
+- Bitcoin state matters more than coin type: after a big leg pulls back 50%, the chance of continuing to a new
+  extreme is about 0.2 when BTC is in DOWN / STRONG_DOWN, versus 0.35-0.45 in COIL / RANGE / UP (break-even for a 50%
+  entry, 78.6% stop, prior-extreme target is about 0.36). Small caps' down legs pull back 50% less often in a strong
+  BTC fall (0.42 vs 0.48 for large caps) and much less in COIL (0.26).
+- Displacement candles follow through in COIL and UP (+0.4 to +1.1 ATR over 24h) and reverse in STRONG_DOWN / RANGE.
+  Daily momentum reverses in DOWN (next day agrees with the past week only 45% of the time).
+
+### Pre-registered 2026-11-21: step 5, strategies by coin group x Bitcoin state, held-out episodes (studies/episodes.py)
+- New strategy SW50 (from the user's swing description + atlas E5): after a big leg (>= 6 ATR within 5 days on 4h)
+  confirmed by a 1-ATR pullback, a limit order at the 50% retracement; stop at the 78.6% level; target the leg's
+  extreme; cancelled if price makes a new extreme first or after 10 days unfilled; max hold 7 days; both directions;
+  1h fills, costs 0.06%/side.
+- Episodes = runs of consecutive days in the same BTC state (last completed day). Within each state, episodes are
+  assigned to 5 folds in turn. For each fold: switch on cells (strategy+side x coin group x BTC state) whose average R
+  on the OTHER folds is > 0.10 with >= 30 trades; score the held-out fold. Routers compared: take everything,
+  strategy only, + BTC state, + coin group, + both. Pass: router avg R > 0.05 out of episode, positive in >= 4 of 5
+  folds. Trades from all strategies in data/trades.pkl plus SW50.
