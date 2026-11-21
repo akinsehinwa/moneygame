@@ -203,3 +203,4 @@ Same as CF4H except: one signal a day at 08:00 SGT (00:00 UTC close); score = me
 last 18 bars (3 days) / its mean over the last 180 bars (30 days) - 1; time exit 72h. Stop 3 x ATR(14, 4h) (<= 15%),
 TP 2R, long lowest / short highest. 1 variant (2nd speed tried for the crowd idea after weekly and 4H). Same pass rule;
 if it passes, the slot-constrained two-account simulation runs with CF1D in place of CF4H.
+| 2026-11-21 | CF1D: crowd positioning on the daily clock (results/2026-11-21-cf1d-standalone.md) | 1 | Both sides: +0.033R old (Sharpe 1.02) / +0.037R 12m (1.03), but negative without the best 3 coins (−2.5 / −1.6R) → fails the pre-set rule. Shorts alone: +0.072 / +0.089R, Sharpe 0.96 / 1.51, positive without the best 3 coins; longs alone negative in both periods | REJECT as pre-registered. Data-suggested follow-up (not a pass): CF1D shorts only → paper-trade forward before any live use |

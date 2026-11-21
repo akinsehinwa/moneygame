@@ -22,6 +22,10 @@ SIGNAL_UTC_CLOSE_HOURS = {0, 4, 8, 12}                    # = 08 / 12 / 16 / 20 
 START = int(pd.Timestamp(config.EVAL_START, tz="UTC").timestamp() * 1000)
 SPLIT = int(pd.Timestamp(config.SPLIT, tz="UTC").timestamp() * 1000)
 RANKS = 3                                                  # keep the top 3 per side per signal (for slot fallbacks)
+DAILY = "--daily" in sys.argv                              # CF1D: one signal a day at 08:00 SGT, 3d vs 30d, 72h hold
+if DAILY:
+    SIGNAL_UTC_CLOSE_HOURS = {0}
+SHORT_W, LONG_W, HOLD_H = (18, 180, 72) if DAILY else (6, 84, 48)
 
 
 def coin_frames(coin):
@@ -29,7 +33,7 @@ def coin_frames(coin):
     b = resample(df, 4).set_index("t")
     b["atr"] = atr(b.reset_index())
     m = load_metrics4h(coin).set_index("t").global_ls.reindex(b.index)
-    s = m.rolling(6, min_periods=5).mean() / m.rolling(84, min_periods=60).mean() - 1
+    s = m.rolling(SHORT_W, min_periods=int(SHORT_W * 0.8)).mean() / m.rolling(LONG_W, min_periods=int(LONG_W * 0.7)).mean() - 1
     b["score"] = s
     b["age"] = np.arange(len(b))
     return df, b
@@ -85,7 +89,7 @@ def build():
         s = s.sort_values()
         for side, picks in ((1, s.index[:RANKS]), (-1, s.index[::-1][:RANKS])):
             for rank, coin in enumerate(picks, 1):
-                res = trade(h1[coin], t_close, side, 3 * A.at[t, coin])
+                res = trade(h1[coin], t_close, side, 3 * A.at[t, coin], max_h=HOLD_H)
                 if res:
                     rows.append({"t": t_close, "coin": coin, "side": side, "rank": rank, "r": res[0], "t_out": res[1],
                                  "stop_pct": float(stop_pct[coin]), "marks": res[2]})
@@ -100,7 +104,7 @@ def stats(x):
 
 if __name__ == "__main__":
     X = build()
-    X.to_pickle(os.path.join(config.DATA, "cf4h_candidates.pkl"))
+    X.to_pickle(os.path.join(config.DATA, "cf1d_candidates.pkl" if DAILY else "cf4h_candidates.pkl"))
     top = X[X["rank"] == 1]
     # standalone: one position per coin at a time (skip a signal if that coin is still open)
     keep, open_until = [], {}
@@ -119,5 +123,5 @@ if __name__ == "__main__":
     ok = all((R[(R.side == "both")]["avg R"] > 0)) and all(R[(R.side == "both")]["weekly Sharpe"] >= 0.5) and \
         all(R[(R.side == "both")]["sum R w/o best 3 coins"] > 0)
     print(R.to_string(index=False)); print("VERDICT:", "PASS" if ok else "fail")
-    write_report("cf4h standalone", [("Rule", __doc__.split("\n\n")[1]), ("Results", R),
+    write_report("cf1d standalone" if DAILY else "cf4h standalone", [("Rule", __doc__.split("\n\n")[1]), ("Results", R),
                                      ("Verdict", "PASS" if ok else "fail")])
