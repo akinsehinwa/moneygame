@@ -211,3 +211,15 @@ Rules exactly as the CF1D test, shorts only. Forward window starts with the 2026
 free 5th slot only if the forward avg R is positive with ~15+ trades AND the next month confirms; otherwise graveyard.
 | 2026-11-21 | Weekly books by BTC state (results/2026-11-21-weekly-books-by-btc-state.md) | descriptive | STRONG_DOWN (the current state): 100K avg week +0.03%, worst -1.53%; 50K -0.09%, worst -1.08% (17 weeks each, 59% losing). Most profit came in COIL / UP for the 100K and DOWN / RANGE / UP for the 50K | Expect flat weeks now. No state filter added (would be chosen after seeing these numbers) |
 | 2026-11-21 | Funded-phase risk plan (results/2026-11-21-funded-risk-plan.md) | 5 risk levels x 2 | 100K (COMBO): breach within 180 days 1% / 9% / 12% / 16% / 30% at 0.5 / 0.75 / 1.0 / 1.25 / 1.5% per coin; avg payout to the trader $311 / 466 / 621 / 776 / 916 per month. 50K (CROWDFADE): no breach at any level up to 1.5%; avg payout $135 / 202 / 269 / 337 / 404 per month | Once funded: 100K drops to 1.0% per coin, 50K stays at 1.5% (plan; re-check before switching) |
+
+### Pre-registered 2026-11-21: research batch 3 (studies/batch3.py)
+1. OIFADE (weekly basket, portfolio engine, costs + funding): score = -(7-day mean of open-interest VALUE / its 30-day
+   mean - 1); long the 7 highest scores (OI flushed out), short the 7 lowest (OI piling in). Weekly, Monday 08:00 SGT.
+2. OIFADE + CROWDFADE: 50/50 of the two books.
+   Pass rule (both): net Sharpe >= 0.5 in both periods AND positive in both without the 3 best coins.
+3. Perp premium: NOT tested. Binance's funding rate is computed from the premium index, so it is the same signal as
+   CARRY (rejected: Sharpe 1.36 old / -0.10 last 12m).
+4. BTC daily CRT patterns (BULL_CRT, BEAR_CRT, BREAK_UP, BREAK_DN, INSIDE, OUTSIDE; lib/btcstate.py): next-day
+   return of the equal-weight basket of eligible coins and of BTC. A pattern is a candidate only if the basket's
+   next-day mean has the same sign in both periods with |t| >= 2 over the whole sample (6 patterns tested, so ~0.3
+   could pass by chance at this bar).
