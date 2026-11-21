@@ -59,3 +59,9 @@ were delisted after crashing are missing). That flatters long legs and hurts sho
 MOM (60d / skip 7 / 7 per side, weekly) and SECTOR (30d, weekly) paper-traded forward from the rebalance closing
 2026-11-23 00:00 UTC. Weights frozen on record, never regenerated. Promotion review after ~12 rebalances: forward
 Sharpe >= 0.5 and no drawdown beyond the backtest's worst (MOM −25%, SECTOR −24%) → Candidate; otherwise back to the ledger.
+
+### Pre-registered 2026-11-21: "151 Trading Strategies" batch 2 (studies/p151b.py)
+6 strategies, one fixed variant each (rules in the file's docstring): PAIRS (3.8), ECO (3.9.1 / 14.4 ecosystem
+clusters), PIVOT (3.14, 1h execution), CROWDFADE and CROWDTOP (9.2 hedging pressure via Binance long/short metrics),
+DISPMOM (6.3 dispersion as a gate on MOM). Pass rule, stricter than batch 1 after its lessons: net Sharpe >= 0.5 in
+both periods AND positive in both periods without the book's 3 best coins.

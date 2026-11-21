@@ -123,3 +123,60 @@ def download_funding(coin):
 def load_funding(coin):
     a = json.load(open(path_funding(coin))) if os.path.exists(path_funding(coin)) else []
     return pd.DataFrame(a, columns=["t", "interval_h", "rate"])
+
+
+METRICS = "https://data.binance.vision/data/futures/um/daily/metrics/%sUSDT/%sUSDT-metrics-%s.zip"
+
+
+def path_metrics(coin):
+    return os.path.join(config.DATA, "%s-metrics.json" % coin)
+
+
+def _metrics_day(sym, day):
+    blob = _get(METRICS % (sym, sym, day.isoformat()))
+    if not blob:
+        return None
+    rows = []
+    with zipfile.ZipFile(io.BytesIO(blob)) as z:
+        for n in z.namelist():
+            for r in csv.reader(io.TextIOWrapper(z.open(n), "utf-8")):
+                if r and r[0][:2] == "20":
+                    try:
+                        rows.append([float(x) if x else np.nan for x in r[2:8]])
+                    except ValueError:
+                        pass
+    if not rows:
+        return None
+    a = np.array(rows)
+    t = int(dt.datetime(day.year, day.month, day.day, tzinfo=dt.timezone.utc).timestamp() * 1000)
+    # daily: open interest (last), OI value (last), top-trader account ratio, top-trader position ratio,
+    # global account long/short ratio, taker buy/sell volume ratio (means over the day's 5-minute rows)
+    return [t, a[-1, 0], a[-1, 1]] + [float(np.nanmean(a[:, k])) for k in (2, 3, 4, 5)]
+
+
+def download_metrics(coin, workers=8):
+    """Binance positioning metrics, one daily file per day -> [[day_ms, oi, oi_value, top_acct_ratio,
+    top_pos_ratio, global_ls_ratio, taker_ratio], ...]. Incremental."""
+    sym = config.BINANCE_SYMBOL.get(coin, coin)
+    f = path_metrics(coin)
+    have = {r[0]: r for r in json.load(open(f))} if os.path.exists(f) else {}
+    start = dt.date.fromisoformat(config.HISTORY_START)
+    today = dt.datetime.now(dt.timezone.utc).date()
+    days, d = [], start
+    while d < today:
+        t = int(dt.datetime(d.year, d.month, d.day, tzinfo=dt.timezone.utc).timestamp() * 1000)
+        if t not in have:
+            days.append(d)
+        d += dt.timedelta(days=1)
+    with ThreadPoolExecutor(workers) as ex:
+        for r in ex.map(lambda x: _metrics_day(sym, x), days):
+            if r:
+                have[r[0]] = r
+    json.dump(sorted(have.values()), open(f, "w"))
+    return coin, len(have)
+
+
+def load_metrics(coin):
+    cols = ["t", "oi", "oi_value", "top_acct", "top_pos", "global_ls", "taker"]
+    a = json.load(open(path_metrics(coin))) if os.path.exists(path_metrics(coin)) else []
+    return pd.DataFrame(a, columns=cols)

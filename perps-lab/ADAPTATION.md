@@ -15,10 +15,10 @@ or `strategies/` (single-coin trades). Status lives in STRATEGIES.md and LEDGER.
 | 3.5 | implied volatility | options-implied info | needs crypto option data (DVOL) | deferred (data) |
 | 3.6, 3.20 | multifactor, alpha combos | diversify across signals | combine the books that pass | after single tests |
 | 3.7 | residual momentum | momentum net of market factors | momentum of returns net of BTC beta | RESMOM |
-| 3.8 | pairs trading | correlated assets re-converge | correlated coin pairs (e.g. an L1 vs its ecosystem token) | deferred (next batch) |
+| 3.8 | pairs trading | correlated assets re-converge | correlated coin pairs, re-picked weekly | PAIRS |
 | 3.9-3.10 | mean reversion in clusters | overreaction vs peers | weekly contrarian vs the cross-section | CONTRA |
 | 3.11-3.13 | 1/2/3 moving averages | trends persist | per-coin MA trend book | MA2, MA3 |
-| 3.14 | support / resistance (pivots) | intraday levels | daily pivot trades on 1h bars | deferred (next batch) |
+| 3.14 | support / resistance (pivots) | intraday levels | daily pivot trades on 1h bars | PIVOT |
 | 3.15 | channel | bounce off range edges | 20-day channel fade (breakout = BRK, done) | CHANFADE |
 | 3.16 | event-driven M&A | events misprice | **new perp listings** underperform like IPOs | NEWLIST |
 | 3.17, 18.2 | KNN, neural nets | nonlinear patterns | ML on technical features (walk-forward only) | deferred (overfitting risk) |
@@ -33,12 +33,12 @@ or `strategies/` (single-coin trades). Status lives in STRATEGIES.md and LEDGER.
 | 8.3 | dollar carry | average carry times the market | **average funding across coins** to time the basket | DOLLARCARRY |
 | 8.4 | momentum & carry combo | two weakly correlated premia | MOM + CARRY | MOMCARRY |
 | 6.2 | cash-and-carry | spot vs future basis | perp premium vs spot (needs a spot leg) | deferred (data) |
-| 6.3 | dispersion | index vs constituent volatility | correlation regime of alts vs BTC as a filter | deferred (filter test) |
+| 6.3 | dispersion | index vs constituent volatility | cross-sectional dispersion as a gate on momentum | DISPMOM |
 | 6.5 | volatility targeting | constant risk | basket scaled to 40% vol | VOLTARGET |
 | 7.2-7.4 | VIX basis, vol carry, vol risk premium | volatility term structure | short-term vs long-term realized vol as a regime | deferred (filter test) |
-| 9.2 | hedging pressure | follow / fade the hedgers | Binance long/short ratio and taker flow (metrics archive) | deferred (data) |
+| 9.2 | hedging pressure | follow / fade the hedgers | fade the crowd's long/short ratio; follow top traders vs the crowd | CROWDFADE, CROWDTOP |
 | 9.5 | skewness premium | lottery tickets overpriced | short the most positively skewed coins | SKEW |
-| 14.4 | spark spread | input vs output spread | ecosystem spreads (ETH vs ETH-ecosystem tokens) | with pairs |
+| 14.4 | spark spread | input vs output spread | mean reversion inside ecosystems (ETH, SOL, BTC, BNB groups) | ECO |
 | 15 | distressed debt | buy after capitulation | coins > 75% below their 1-year high that turn up | DISTRESS |
 | 19.5 | economic announcements | pre-announcement drift | long the basket on FOMC decision days | FOMCDAY |
 | 5, 11-13, 16, 17 | bonds, CDOs, MBS, convertibles, tax, real estate, cash | | no perp counterpart (or illegal: ch 17's laundering / loan sharking, excluded) | not adaptable |
