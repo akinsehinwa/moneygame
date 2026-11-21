@@ -223,3 +223,4 @@ free 5th slot only if the forward avg R is positive with ~15+ trades AND the nex
    return of the equal-weight basket of eligible coins and of BTC. A pattern is a candidate only if the basket's
    next-day mean has the same sign in both periods with |t| >= 2 over the whole sample (6 patterns tested, so ~0.3
    could pass by chance at this bar).
+| 2026-11-21 | Batch 3 (results/2026-11-21-research-batch-3.md) | 2 books + 6 patterns | OIFADE: Sharpe -1.33 old / -0.97 12m (fails; the reverse looks like momentum: OI piling into trending coins). OIFADE + CROWDFADE: -0.43 / 0.77 (fails). BTC OUTSIDE day: alt basket next day +1.15% (t 2.21; old +1.31, 12m +0.74; 49 days) = candidate; the other 5 CRT patterns not significant | OUTSIDE: paper forward test. OIFOLLOW (reverse of OIFADE, data-suggested): paper forward test. Both frozen in studies/batch3_forward.py, reported with the 2026-12-23 report |
