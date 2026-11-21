@@ -186,7 +186,23 @@ def download_metrics(coin, workers=8):
     return coin, len(have)
 
 
+def load_tv(kind):
+    """Recent daily bars saved from TradingView (data/tv_<kind>.json: {coin: {"t": [sec], "o": [], "h": [], "l": [],
+    "c": [], "v": []}}), used to fill the days the Binance archive hasn't published yet. kind = "daily" or "lsr"."""
+    f = os.path.join(config.DATA, "tv_%s.json" % kind)
+    return json.load(open(f)) if os.path.exists(f) else {}
+
+
 def load_metrics(coin):
     cols = ["t", "oi", "oi_value", "top_acct", "top_pos", "global_ls", "taker"]
     a = json.load(open(path_metrics(coin))) if os.path.exists(path_metrics(coin)) else []
-    return pd.DataFrame(a, columns=cols)
+    df = pd.DataFrame(a, columns=cols)
+    tv = load_tv("lsr").get(coin)
+    if tv:                                   # TradingView long/short ratio for days after the archive (daily bar average)
+        last = df.t.max() if len(df) else -1
+        for i, t in enumerate(tv["t"]):
+            ms = int(t) * 1000
+            if ms > last:
+                avg = (tv["o"][i] + tv["h"][i] + tv["l"][i] + tv["c"][i]) / 4
+                df.loc[len(df)] = [ms, np.nan, np.nan, np.nan, np.nan, avg, np.nan]
+    return df

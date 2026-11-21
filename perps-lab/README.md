@@ -24,6 +24,7 @@ Nothing here depends on any other project: the folder can be copied out as its o
 | `PROP_RULES.md` | the prop account's rules (5 positions, stops, 7-day hold, loss limits) and what they mean for design |
 | `studies/prop.py` | compact 2-4 position books + challenge simulation (pass rates by day 90 / 180) |
 | `tickets.py` | weekly tickets for the two accounts (100K COMBO, 50K CROWDFADE, 1.5% per coin) → `tickets/<date>.md` |
+| `tv_symbols.py` | TradingView symbols for the live data used by the Monday ticket run (`data/tv_*.json`, `data/live_prices.json`) |
 | `STRATEGIES.md` | status board: every strategy and where it is in the pipeline |
 | `LEDGER.md` | every hypothesis tested, the result and the decision (including the failures) |
 | `results/` | dated reports (committed) |
@@ -62,6 +63,14 @@ Failures stay in `LEDGER.md` (the graveyard), so the same idea isn't re-tested b
 4. Judge on the last 12 months **and** the 2 years before; an idea must be positive in both.
 5. Trades on the same day across coins move together: use the weekly t-stat. |t| < 2 is not significant.
 6. A filter must raise total R per month, not just average R on fewer trades.
+
+## Live data (TradingView)
+
+History for research comes from Binance's public archive (it lags 1-2 days). For live tickets, the days the archive
+hasn't published yet are filled from TradingView (the user's own data source): daily candles `BINANCE:<SYM>USDT.P`
+and the crowd long/short ratio `BINANCE:<SYM>USDT.P_LSR` (checked against the archive's account ratio: correlation
+0.94-0.98, same level), plus live prices for entries. `lib/portfolio.build_panel` and `lib/data.load_metrics` merge
+`data/tv_daily.json` / `data/tv_lsr.json` automatically when present.
 
 ## Time zone
 

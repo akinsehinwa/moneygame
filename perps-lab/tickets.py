@@ -28,7 +28,19 @@ COST = config.FEE_PER_SIDE + config.SLIP_PER_SIDE
 SGT = dt.timezone(dt.timedelta(hours=8))
 
 
+def live_prices(max_age_h=3):
+    """Live prices saved from TradingView (data/live_prices.json, Binance contract units), if fresh."""
+    f = os.path.join(config.DATA, "live_prices.json")
+    if not os.path.exists(f):
+        return None, None
+    j = json.load(open(f))
+    fetched = dt.datetime.strptime(j["fetched_utc"], "%Y-%m-%d %H:%M").replace(tzinfo=dt.timezone.utc)
+    age = (dt.datetime.now(dt.timezone.utc) - fetched).total_seconds() / 3600
+    return (j["prices"], j["fetched_utc"]) if age <= max_age_h else (None, None)
+
+
 def main():
+    live, live_at = live_prices()
     d = prop.C.index[-1]                                    # latest complete daily bar in the archive
     scores = {"COMBO": prop.COMBO_S, "CROWDFADE": prop.CF_S}
     used, tickets = set(), []
@@ -42,7 +54,7 @@ def main():
         for coin, side in picks:
             used.add(coin)
             sp = float(stop_pct[coin])
-            px = float(prop.C.at[d, coin])                  # last Binance daily close (Binance units, e.g. 1000PEPE)
+            px = float(live[coin]) if live and coin in live else float(prop.C.at[d, coin])   # Binance contract units
             stop = px * (1 - side * sp)
             target = px * (1 + side * TARGET_R * sp)
             if side == -1:
@@ -61,10 +73,11 @@ def main():
     st = label(resample(load_1h("BTC"), 24)).iloc[-1]
     now = dt.datetime.now(SGT)
     lines = ["# Tickets (generated %s SGT)" % now.strftime("%a %Y-%m-%d %H:%M"), "",
-             "Signals and reference prices: Binance data through the daily candle of %s (closed %s 08:00 SGT). "
-             "Reference prices are that close and may be stale: **set the stop and take-profit from your actual entry "
-             "using the %% columns** (long: stop = entry x (1 - stop%%), TP = entry x (1 + TP%%); short: the reverse)." % (
-                 pd.to_datetime(d, unit="ms").date(), (pd.to_datetime(d, unit="ms") + pd.Timedelta(days=1)).date()),
+             "Signals: data through the daily candle of %s (closed %s 08:00 SGT). Prices: %s. **If your fill "
+             "differs, set the stop and take-profit from your actual entry using the %% columns** (long: stop = entry x "
+             "(1 - stop%%), TP = entry x (1 + TP%%); short: the reverse)." % (
+                 pd.to_datetime(d, unit="ms").date(), (pd.to_datetime(d, unit="ms") + pd.Timedelta(days=1)).date(),
+                 ("TradingView live (BINANCE perps), fetched %s UTC" % live_at) if live else "last daily close (stale)"),
              "BTC state at that close: %s (20-day move %+.1f%%)." % (st.state, st.r20 * 100), "",
              "Rules: risk %.1f%% of the account per coin; 5x isolated, then ADD margin up to the 'margin' figure so "
              "liquidation sits beyond the stop; limit entry; stop and take-profit attached; close at the next weekly "
@@ -72,7 +85,7 @@ def main():
     for acct, size, strat in ACCOUNTS:
         x = T[T.account == acct]
         lines += ["## %s account (%s), risk $%s per coin" % (acct, strat, f"{size * RISK:,.0f}"), "",
-                  "| coin | side | stop % | TP % | position size (USDT) | margin (USDT) | eff. lev | ref. price | stop at ref. | TP at ref. |",
+                  "| coin | side | stop % | TP % | position size (USDT) | margin (USDT) | eff. lev | limit entry | stop | take-profit |",
                   "|---|---|---|---|---|---|---|---|---|---|"]
         for r in x.itertuples():
             f = lambda v: ("%.6g" % v)

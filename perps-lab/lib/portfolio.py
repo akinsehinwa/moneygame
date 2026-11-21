@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 
 import config
-from lib.data import load_1h, load_funding, resample
+from lib.data import load_1h, load_funding, load_tv, resample
 
 DAY = 24 * 3600_000
 COST = config.FEE_PER_SIDE + config.SLIP_PER_SIDE
@@ -26,8 +26,15 @@ def build_panel(force=False):
     if os.path.exists(PANEL) and not force:
         return pd.read_pickle(PANEL)
     C, Hh, L, QV, F = {}, {}, {}, {}, {}
+    tvd = load_tv("daily")
     for coin in config.COINS:
         d = resample(load_1h(coin), 24).set_index("t")
+        tv = tvd.get(coin)
+        if tv:                               # TradingView daily bars for days after the archive (complete days only)
+            x = pd.DataFrame({"o": tv["o"], "h": tv["h"], "l": tv["l"], "c": tv["c"], "v": tv.get("v") or [np.nan] * len(tv["t"])},
+                             index=[int(t) * 1000 for t in tv["t"]])
+            x = x[x.index > (d.index.max() if len(d) else -1)]
+            d = pd.concat([d, x])
         C[coin], Hh[coin], L[coin], QV[coin] = d.c, d.h, d.l, d.v * d.c
         f = load_funding(coin)
         if len(f):

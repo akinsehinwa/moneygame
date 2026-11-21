@@ -153,3 +153,9 @@ Informational (no pass rule). Same caveat: strategies were chosen on this histor
 | 2026-11-21 | Tighter stops for 5x isolated (stop 1.5 / 2 ATR, skip stops > 15%) | 2 | 1.5 ATR: one account negative in the old period; 2 ATR: weaker than 3 ATR. Solution instead: keep 3 ATR and ADD isolated margin so liquidation sits beyond the stop (user's suggestion) | keep 3 ATR + added margin |
 | 2026-11-21 | Two-account allocation (results/2026-11-21-prop-two-accounts-different-rankings.md) | 3 schemes | Alternate ranks (1+3 / 2+4): the 2+4 account has no edge (Sharpe −0.67 / 0.08). Different rankings, no overlap: 100K COMBO top 2+2 (0.46 / 1.09) + 50K CROWDFADE top 2+2 (1.13 / 1.78): at 1.5-1.75% risk, at least one account passes both stages by day 180 in 23-35% of starts, both fail together 0%, daily limit never hit. MOM as the second account fails more | ADOPT: 100K COMBO, 50K CROWDFADE, 1.5% per coin |
 | 2026-11-21 | Entry weekday and signal age (results/2026-11-21-cadence-entry-weekday-and-signal-age.md) | 14 | Monday 08:00 SGT entry is among the best days for both strategies with fresh or 2-day-old signals; results swing a lot by weekday (the edge is noisy) | Tickets generated Monday 08:07 SGT (scheduled task) from the newest archive data (usually 1-2 days old), placed as limit orders around 08:30 SGT |
+
+### 2026-11-21: live data from TradingView (user's choice)
+Monday tickets use TradingView for everything recent: daily candles and the long/short ratio (BINANCE:<SYM>USDT.P_LSR,
+correlation 0.94 / 0.98 with the archive's account ratio for BTC / SOL, same level) fill the archive's 1-2 day gap,
+so signals use Sunday's completed candle; entry, stop and take-profit prices come from TradingView live prices. First
+real tickets: Monday 2026-11-23 just after 08:00 SGT. The 2026-11-21 tickets file is a format preview only.
