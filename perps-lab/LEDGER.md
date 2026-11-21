@@ -90,3 +90,14 @@ Challenge simulation (informational, all books, risk 0.5 / 1 / 1.5 / 2% of the s
 weekly start date from 2023-11-20; stage 1 (+8% / -10% floor / -5% daily from the day's starting equity, floating
 losses at each hour's worst price) then stage 2 (+5% / -8%); close everything once floating profit reaches the target.
 CAUTION: the strategies were chosen on this same history, so the simulation is optimistic.
+
+### 2026-11-21: data fix + new direction
+- Data: LIT's history before 2025-12-23 and PUMP's before 2025-07-10 were dead contracts (zero volume, frozen prices;
+  LIT's ticker was reused for a new token). lib/data.load_1h now drops everything before the last 3+ day zero-volume
+  stretch. Re-run: MOM 0.83 / 1.22, SECTOR 0.86 / 1.10, MOMCARRY 1.61 / 0.73, TRENDLO 0.75 / 1.56, CROWDFADE
+  0.96 / 1.91 (w/o best 3: 0.15 / 0.04). Same verdicts.
+- Universe atlas v1 (results/2026-11-21-universe-atlas.md): coin traits are NOT stable between the old 2 years and the
+  last 12 months (rank correlations 0.13-0.54; cluster membership ARI 0.03). Only volatility ratio and correlation
+  are fairly persistent. The 2-ATR retracement measure was too loose (85-90% everywhere) and is replaced in atlas v2.
+- New plan (PLAN.md): element profiles per coin per Bitcoin state, memory test, groups, then strategy tests validated
+  on held-out Bitcoin episodes.

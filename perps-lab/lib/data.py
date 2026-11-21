@@ -75,10 +75,20 @@ def download_all(coins=None, workers=12):
         yield from ex.map(download, coins or config.COINS)
 
 
-def load_1h(coin):
+def load_1h(coin, trim_dead=True):
+    """1h bars. trim_dead: drop everything up to the end of the last stretch of >= 3 days with zero volume
+    (a delisted contract whose ticker was later reused for a different token, e.g. LIT; or a dead pre-launch period)."""
     a = np.array(json.load(open(path_1h(coin))), dtype=float)
     df = pd.DataFrame(a[:, :6], columns=["t", "o", "h", "l", "c", "v"])
     df["t"] = df.t.astype("int64")
+    if trim_dead and len(df):
+        day = df.t // (24 * H)
+        dv = df.groupby(day).v.sum()
+        dead = (dv == 0).astype(int)
+        runs = dead.groupby((dead != dead.shift()).cumsum()).transform("sum") * dead
+        long_dead = runs[runs >= 3]
+        if len(long_dead):
+            df = df[day > long_dead.index.max()].reset_index(drop=True)
     return df
 
 
