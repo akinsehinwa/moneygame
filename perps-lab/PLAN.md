@@ -30,3 +30,10 @@ coins)? Stable elements can be used as coin filters; unstable ones must be measu
 Each strategy is tested only where its key element is present (e.g. a retracement strategy on coins/states where E5 is
 strong). Validation: learn on some episodes of a Bitcoin state, test on other episodes of the same state that were
 left out (not just "the last 12 months").
+
+## Status (2026-11-21)
+- Steps 1-4 done (results/2026-11-21-element-atlas*.md). Key: Bitcoin's state drives behaviour; coin identity only
+  shows in its BTC link and volatility.
+- Step 5 first pass done (results/2026-11-21-step-5-held-out-episodes.md): blanket routing fails out of episode;
+  a handful of individual strategy legs survive selective routing. Next: a selective router of only those legs,
+  pre-registered, with the same held-out-episode test; then the 4H CROWDFADE version.
