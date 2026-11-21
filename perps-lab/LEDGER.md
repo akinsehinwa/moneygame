@@ -131,3 +131,16 @@ CAUTION: the strategies were chosen on this same history, so the simulation is o
 
 ### 2026-11-21: COMBO4 (prop version) added to the shadow book from the 2026-11-23 rebalance, marked trade by trade
 (stop 3 ATR, target 3R; a short's take-profit is floored at 10% of entry so it is always a valid order price).
+
+### Pre-registered 2026-11-21: multi-account study (studies/prop_multi.py)
+Accounts: 50K two-step + two 100K two-step; only ONE 100K can ever be funded, so the two 100Ks are a race (only the
+first pass matters). Rules as PROP_RULES.md (same % limits on 100K). Weekly books with stop 3 ATR / target 3R.
+- 100K race schemes (each account <= 5 positions): R1 same book in both (COMBO4 + COMBO4); R2 one 8-coin COMBO book
+  dealt out (account A gets long/short ranks 1 and 3, account B ranks 2 and 4); R3 different strategies (CF4 + MOM4);
+  R4 = R3 with unequal risk (CF4 at 2%, MOM4 at 1%). Risk per position 1 / 1.5 / 2% (equal) for R1-R3.
+  Measures from every weekly start with 180+ days of data after it: P(at least one 100K passes both stages) by day 90
+  and 180, median day of the first pass, P(both failed by day 180).
+- 50K: COMBO4 / CF4 / MOM4 at 1 / 1.5 / 2%: P(passed both stages) by day 180.
+- Funded phase (100K and 50K): same books at 0.5 / 1 / 1.5%: 180 days from every start, payout of any profit every
+  15 days at 80% (balance resets, the 8% floor stays): P(blown within 180 days), average payout per month in USD.
+Informational (no pass rule). Same caveat: strategies were chosen on this history, so results are optimistic.
